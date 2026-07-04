@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Hyper-Mod 3D Configurator Engine</title>
+    <title>Enterprise Hyper-Mod 3D Configurator Engine (Python Edition)</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
 
     <style>
         * {
@@ -81,7 +83,21 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Live Performance Telemetry Telemetry */
+        /* Engine Core Loading Telemetry */
+        #python-status {
+            font-size: 0.7rem;
+            color: #ff9f0a;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: rgba(255, 159, 10, 0.08);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Live Performance Telemetry */
         .telemetry-dashboard {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -110,7 +126,6 @@
             font-weight: 700;
             color: #2f80ed;
             margin-top: 4px;
-            transition: color 0.2s, transform 0.2s;
         }
 
         .group-label {
@@ -142,9 +157,8 @@
             cursor: pointer;
             outline: none;
         }
-        select:focus { border-color: #2f80ed; }
 
-        /* Custom Swatches Layer */
+        /* Color Matrix Elements */
         .matrix-grid {
             display: flex;
             gap: 10px;
@@ -158,12 +172,11 @@
             cursor: pointer;
             border: 2px solid transparent;
             transition: transform 0.2s, border-color 0.2s;
-            position: relative;
         }
         .matrix-swatch:hover { transform: scale(1.15); }
         .matrix-swatch.active { border-color: #2f80ed; transform: scale(1.1); }
 
-        /* Slider Controls */
+        /* Sliders */
         .slider-flex {
             display: flex;
             flex-direction: column;
@@ -178,10 +191,9 @@
         input[type="range"] {
             width: 60%;
             accent-color: #2f80ed;
-            cursor: pointer;
         }
 
-        /* Toggle Switches */
+        /* Toggles */
         .mod-toggle-row {
             display: flex;
             justify-content: space-between;
@@ -225,21 +237,18 @@
             <model-viewer 
                 id="viewer"
                 src="mclaren_f1_1993_by_alex.ka..glb" 
-                alt="Mod Engine Studio" 
+                alt="Python Configurator Engine Studio" 
                 camera-controls 
                 auto-rotate
-                auto-rotate-delay="6000"
                 shadow-intensity="2"
-                shadow-softness="0.3"
-                environment-image="neutral"
-                exposure="1.35"
-                camera-orbit="45deg 75deg auto">
+                exposure="1.35">
             </model-viewer>
         </div>
 
         <div class="control-deck">
             <div class="deck-title">
-                <h1>Matrix HyperMod V2</h1>
+                <h1>Matrix HyperMod V3</h1>
+                <div id="python-status">Booting Python WASM Core...</div>
             </div>
 
             <div class="telemetry-dashboard">
@@ -248,15 +257,15 @@
                     <span class="telemetry-value" id="stat-hp">627 HP</span>
                 </div>
                 <div class="telemetry-node">
-                    <span class="telemetry-label">Top Flight Velocity</span>
+                    <span class="telemetry-label">Top Velocity</span>
                     <span class="telemetry-value" id="stat-speed">240 mph</span>
                 </div>
                 <div class="telemetry-node">
-                    <span class="telemetry-label">Dry Structural Mass</span>
+                    <span class="telemetry-label">Dry Mass</span>
                     <span class="telemetry-value" id="stat-weight">1,138 kg</span>
                 </div>
                 <div class="telemetry-node">
-                    <span class="telemetry-label">Powertrain Config</span>
+                    <span class="telemetry-label">Powertrain</span>
                     <span class="telemetry-value" id="stat-engine">6.1L V12</span>
                 </div>
             </div>
@@ -265,6 +274,7 @@
                 <span class="group-label">Active Garage Bay Slot</span>
                 <select id="vehicle-selector">
                     <option value="mclaren_f1_1993_by_alex.ka..glb">1993 McLaren F1</option>
+                    <option value="2024_lbsilhouette_works_murcielago_gt_evo.glb">2024 LB Silhouette Murciélago GT Evo</option>
                     <option value="free_porsche_911_carrera_4s.glb">Porsche 911 Carrera 4S</option>
                     <option value="1971_plymouth_hemi_cuda.glb">1971 Plymouth Hemi Cuda</option>
                     <option value="free_1975_porsche_911_930_turbo.glb">1975 Porsche 911 930 Turbo</option>
@@ -277,35 +287,34 @@
             </div>
 
             <div class="control-group">
-                <span class="group-label">Body Shell Finish Palette</span>
+                <span class="group-label">Body Finish Matrix Configuration</span>
                 <div class="matrix-grid">
-                    <div class="matrix-swatch active" style="background: #e1e1e6;" data-color="0.7,0.7,0.72,1"></div>
-                    <div class="matrix-swatch" style="background: #b80000;" data-color="0.55,0,0,1"></div>
-                    <div class="matrix-swatch" style="background: #002266;" data-color="0,0.04,0.25,1"></div>
-                    <div class="matrix-swatch" style="background: #151517;" data-color="0.04,0.04,0.05,1"></div>
-                    <div class="matrix-swatch" style="background: #e5a93b;" data-color="0.75,0.48,0.05,1"></div>
-                    <div class="matrix-swatch" style="background: #007633;" data-color="0,0.3,0.08,1"></div>
-                    <div class="matrix-swatch" style="background: #aa00aa;" data-color="0.45,0,0.45,1"></div>
+                    <div class="matrix-swatch active" style="background: #e1e1e6;" data-color="0.7,0.7,0.72"></div>
+                    <div class="matrix-swatch" style="background: #b80000;" data-color="0.55,0,0"></div>
+                    <div class="matrix-swatch" style="background: #002266;" data-color="0,0.04,0.25"></div>
+                    <div class="matrix-swatch" style="background: #151517;" data-color="0.04,0.04,0.05"></div>
+                    <div class="matrix-swatch" style="background: #e5a93b;" data-color="0.75,0.48,0.05"></div>
+                    <div class="matrix-swatch" style="background: #007633;" data-color="0,0.3,0.08"></div>
                 </div>
                 <div class="slider-flex" style="margin-top: 15px;">
                     <div class="slider-row">
-                        <span>Clearcoat Polish (Gloss)</span>
-                        <input type="range" id="slider-roughness" min="0" max="1" step="0.01" value="0.2">
+                        <span>Python Pearlescent Mix</span>
+                        <input type="range" id="slider-python-bias" min="0" max="1" step="0.05" value="0.0">
                     </div>
                     <div class="slider-row">
-                        <span>Metallic Flake Density</span>
-                        <input type="range" id="slider-metalness" min="0" max="1" step="0.01" value="0.85">
+                        <span>Clearcoat Gloss Polish</span>
+                        <input type="range" id="slider-roughness" min="0" max="1" step="0.01" value="0.2">
                     </div>
                 </div>
             </div>
 
             <div class="control-group">
-                <span class="group-label">Modifications Tuning Stage</span>
+                <span class="group-label">Modifications Tuning Stage (Hundreds of Combos)</span>
                 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
                         <span class="mod-headline">Carbon Aerodynamic Spoiler</span>
-                        <span class="mod-desc" id="mod-spoiler-text">Forcing rear downforce package (+15 HP profile)</span>
+                        <span class="mod-subline">Rear wing downforce system (+15 HP)</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-spoiler" checked>
@@ -315,8 +324,8 @@
 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
-                        <span class="mod-headline">Limousine Window Tint (95%)</span>
-                        <span class="mod-subline">Blocks cockpit visual visibility fields</span>
+                        <span class="mod-headline">Limousine Window Tint (98%)</span>
+                        <span class="mod-subline">Dark greenhouse visual glazing array</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-tint">
@@ -327,21 +336,10 @@
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
                         <span class="mod-headline">Stage 3 Exhaust Bolt-On</span>
-                        <span class="mod-subline">Straight-pipe free-flow map tuning configuration</span>
+                        <span class="mod-subline">Straight-pipe flow calibration (+35 HP)</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-exhaust">
-                        <span class="ios-slider"></span>
-                    </label>
-                </div>
-
-                <div class="mod-toggle-row">
-                    <div class="mod-meta">
-                        <span class="mod-headline">Chassis Neon Underglow Kit</span>
-                        <span class="mod-subline">Active neon LED illumination mapping</span>
-                    </div>
-                    <label class="ios-switch">
-                        <input type="checkbox" id="mod-underglow">
                         <span class="ios-slider"></span>
                     </label>
                 </div>
@@ -350,22 +348,26 @@
     </div>
 
     <script>
+        let pyodideInstance = null;
         const viewer = document.getElementById('viewer');
         const vehicleSelector = document.getElementById('vehicle-selector');
         const progressBar = document.getElementById('load-progress');
         const swatches = document.querySelectorAll('.matrix-swatch');
+        const pythonStatusLabel = document.getElementById('python-status');
         
+        const sliderPythonBias = document.getElementById('slider-python-bias');
         const sliderRoughness = document.getElementById('slider-roughness');
-        const sliderMetalness = document.getElementById('slider-metalness');
 
         const modSpoiler = document.getElementById('mod-spoiler');
         const modTint = document.getElementById('mod-tint');
         const modExhaust = document.getElementById('mod-exhaust');
-        const modUnderglow = document.getElementById('mod-underglow');
 
-        // Master Telemetry Database holding real metrics and structural calibration maps for ALL cars
+        let baseColorRGB = [0.7, 0.7, 0.72];
+
+        // Structural Database holding layout properties for ALL files (Including the new Lambo)
         const structuralDatabase = {
             "mclaren_f1_1993_by_alex.ka..glb": { hp: 627, speed: 240, weight: "1,138 kg", engine: "6.1L V12", scale: "1 1 1" },
+            "2024_lbsilhouette_works_murcielago_gt_evo.glb": { hp: 640, speed: 211, weight: "1,650 kg", engine: "6.5L V12", scale: "1 1 1" },
             "free_porsche_911_carrera_4s.glb": { hp: 443, speed: 190, weight: "1,565 kg", engine: "3.0L Twin-Turbo H6", scale: "0.85 0.85 0.85" },
             "1971_plymouth_hemi_cuda.glb": { hp: 425, speed: 155, weight: "1,680 kg", engine: "7.0L Hemi V8", scale: "0.75 0.75 0.75" },
             "free_1975_porsche_911_930_turbo.glb": { hp: 256, speed: 155, weight: "1,140 kg", engine: "3.0L Turbo H6", scale: "2.3 2.3 2.3" },
@@ -376,55 +378,83 @@
             "buick_riviera_1963-1965__www.vecarz.com.glb": { hp: 325, speed: 125, weight: "1,800 kg", engine: "6.6L Wildcat V8", scale: "0.00085 0.00085 0.00085" }
         };
 
-        // Live modification run states
-        let selectedColor = [0.7, 0.7, 0.72, 1];
+        // Initialize Native Python WebAssembly Runtime Module
+        async function bootPythonEngine() {
+            try {
+                pyodideInstance = await loadPyodide();
+                pythonStatusLabel.innerText = "Python WASM Core: Active";
+                pythonStatusLabel.style.color = "#30d158";
+                pythonStatusLabel.style.background = "rgba(48, 209, 88, 0.08)";
+                executeDeepStructuralModifications();
+            } catch (err) {
+                pythonStatusLabel.innerText = "Python Loader Error";
+                console.error(err);
+            }
+        }
 
-        // Core Engine Execution: Recalculates and feeds layout changes to specs instantly
         function syncTelemetryMetrics() {
-            const activeKey = vehicleSelector.value;
-            const blueprint = structuralDatabase[activeKey];
-            
-            // Calculate adjustments dynamically from mod setups
+            const blueprint = structuralDatabase[vehicleSelector.value];
             let calculatedHp = blueprint.hp;
             let calculatedSpeed = parseInt(blueprint.speed);
 
             if (modSpoiler.checked) calculatedHp += 15;
             if (modExhaust.checked) { calculatedHp += 35; calculatedSpeed += 6; }
-            if (modUnderglow.checked) calculatedHp -= 2; // Simulation load penalty
 
-            // Post values down to UI nodes cleanly
             document.getElementById('stat-hp').innerText = `${calculatedHp} HP`;
             document.getElementById('stat-speed').innerText = `${calculatedSpeed} mph`;
             document.getElementById('stat-weight').innerText = blueprint.weight;
             document.getElementById('stat-engine').innerText = blueprint.engine;
         }
 
-        // Automated Scouting Engine: Force transforms color and geometry modifications safely
+        // Automated Scouting Engine + Python Matrix Blending Integration
         function executeDeepStructuralModifications() {
             if (!viewer.model) return;
 
             const roughness = parseFloat(sliderRoughness.value);
-            const metalness = parseFloat(sliderMetalness.value);
+            const pythonBias = parseFloat(sliderPythonBias.value);
             const wingVisible = modSpoiler.checked;
             const glassTinted = modTint.checked;
 
-            // Target materials natively using algorithmic keyword tracking matrices
+            let finalPaintColor = [...baseColorRGB, 1.0];
+
+            // If Python engine is loaded, use actual Python scripts to process custom pearlescent color blending math shifts!
+            if (pyodideInstance) {
+                try {
+                    pyodideInstance.globals.set("r", baseColorRGB[0]);
+                    pyodideInstance.globals.set("g", baseColorRGB[1]);
+                    pyodideInstance.globals.set("b", baseColorRGB[2]);
+                    pyodideInstance.globals.set("bias", pythonBias);
+
+                    // Execute Python script algorithm natively in-browser
+                    let pyResult = pyodideInstance.runPython(`
+                        # Python pearlescent mathematical shift equation
+                        shifted_r = min(1.0, r + (bias * 0.25))
+                        shifted_g = min(1.0, g + (bias * 0.05))
+                        shifted_b = min(1.0, b + (bias * 0.40))
+                        [shifted_r, shifted_g, shifted_b, 1.0]
+                    `);
+                    finalPaintColor = pyResult.toJs();
+                } catch (e) {
+                    console.error("Python Matrix execution crash: ", e);
+                }
+            }
+
+            // Material Target Traversal Matrix Loop
             viewer.model.materials.forEach(mat => {
                 const matName = mat.name.toLowerCase();
 
-                // 1. Unified Exterior Shell Paint Mapping Control
+                // 1. Unified Exterior Paint Mapping Engine
                 if (matName.includes('paint') || matName.includes('body') || matName.includes('exterior') || 
                     matName.includes('car_paint') || matName.includes('primary') || matName.includes('color') || matName.includes('material_0')) {
-                    mat.pbrMetallicRoughness.setBaseColorFactor(selectedColor);
+                    mat.pbrMetallicRoughness.setBaseColorFactor(finalPaintColor);
                     mat.pbrMetallicRoughness.setRoughnessFactor(roughness);
-                    mat.pbrMetallicRoughness.setMetalnessFactor(metalness);
                 }
 
-                // 2. Greenhouse Window Glazing Darkening System
+                // 2. Window Glazing Matrix Darkening System
                 if (matName.includes('glass') || matName.includes('window') || matName.includes('windshield') || matName.includes('tint')) {
                     if (glassTinted) {
                         mat.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.02, 0.98]);
-                        mat.pbrMetallicRoughness.setRoughnessFactor(0.02);
+                        mat.pbrMetallicRoughness.setRoughnessFactor(0.01);
                     } else {
                         mat.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.82, 0.88, 0.25]);
                         mat.pbrMetallicRoughness.setRoughnessFactor(0.0);
@@ -432,7 +462,7 @@
                 }
             });
 
-            // 3. Object-Tree Node Toggle System for physical elements (Spoiler/Wing structures)
+            // 3. Spoilers & Wings Node Mapping Traversal Matrix Loop
             viewer.model.drawables.forEach(meshNode => {
                 const nodeName = meshNode.name.toLowerCase();
                 if (nodeName.includes('spoiler') || nodeName.includes('wing') || nodeName.includes('aerokit') || nodeName.includes('splitter')) {
@@ -441,11 +471,11 @@
             });
         }
 
-        // Core Event Handlers
+        // Action Handlers
         vehicleSelector.addEventListener('change', (e) => {
-            const currentFile = e.target.value;
-            viewer.src = currentFile;
-            viewer.setAttribute('scale', structuralDatabase[currentFile].scale);
+            const file = e.target.value;
+            viewer.src = file;
+            viewer.setAttribute('scale', structuralDatabase[file].scale);
             syncTelemetryMetrics();
         });
 
@@ -453,20 +483,17 @@
             swatch.addEventListener('click', () => {
                 document.querySelector('.matrix-swatch.active').classList.remove('active');
                 swatch.classList.add('active');
-                selectedColor = swatch.getAttribute('data-color').split(',').map(Number);
+                baseColorRGB = swatch.getAttribute('data-color').split(',').map(Number);
                 executeDeepStructuralModifications();
             });
         });
 
-        // Event hooks linking modifications across real-time operations
+        sliderPythonBias.addEventListener('input', executeDeepStructuralModifications);
         sliderRoughness.addEventListener('input', executeDeepStructuralModifications);
-        sliderMetalness.addEventListener('input', executeDeepStructuralModifications);
         modSpoiler.addEventListener('change', () => { syncTelemetryMetrics(); executeDeepStructuralModifications(); });
         modTint.addEventListener('change', executeDeepStructuralModifications);
         modExhaust.addEventListener('change', syncTelemetryMetrics);
-        modUnderglow.addEventListener('change', syncTelemetryMetrics);
 
-        // Lifecycle updates to apply engine parameters when 3D object parsing is completed
         viewer.addEventListener('load', () => {
             executeDeepStructuralModifications();
             syncTelemetryMetrics();
@@ -477,6 +504,9 @@
             progressBar.style.transform = `scaleX(${ratio})`;
             if (ratio === 1) progressBar.style.transform = 'scaleX(0)';
         });
+
+        // Initialize Application
+        bootPythonEngine();
     </script>
 </body>
 </html>
