@@ -37,7 +37,6 @@
             .configurator-wrapper { flex-direction: column; }
         }
 
-        /* 3D Viewport Frame */
         .stage-container {
             flex: 1;
             position: relative;
@@ -56,7 +55,6 @@
             --poster-color: transparent;
         }
 
-        /* Control Deck Sidebar */
         .control-deck {
             width: 450px;
             background: #0b0b0e;
@@ -83,7 +81,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Engine Core Loading Telemetry */
         #python-status {
             font-size: 0.7rem;
             color: #ff9f0a;
@@ -97,7 +94,6 @@
             margin-top: 4px;
         }
 
-        /* Live Performance Telemetry */
         .telemetry-dashboard {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -158,7 +154,6 @@
             outline: none;
         }
 
-        /* Color Matrix Elements */
         .matrix-grid {
             display: flex;
             gap: 10px;
@@ -176,7 +171,6 @@
         .matrix-swatch:hover { transform: scale(1.15); }
         .matrix-swatch.active { border-color: #2f80ed; transform: scale(1.1); }
 
-        /* Sliders */
         .slider-flex {
             display: flex;
             flex-direction: column;
@@ -193,7 +187,6 @@
             accent-color: #2f80ed;
         }
 
-        /* Toggles */
         .mod-toggle-row {
             display: flex;
             justify-content: space-between;
@@ -309,12 +302,12 @@
             </div>
 
             <div class="control-group">
-                <span class="group-label">Modifications Tuning Stage (Hundreds of Combos)</span>
+                <span class="group-label">Modifications Tuning Stage</span>
                 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
                         <span class="mod-headline">Carbon Aerodynamic Spoiler</span>
-                        <span class="mod-subline">Rear wing downforce system (+15 HP)</span>
+                        <span class="mod-subline">Force engine nodes active (+15 HP)</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-spoiler" checked>
@@ -325,7 +318,7 @@
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
                         <span class="mod-headline">Limousine Window Tint (98%)</span>
-                        <span class="mod-subline">Dark greenhouse visual glazing array</span>
+                        <span class="mod-subline">Dark cabin visual glass tint</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-tint">
@@ -364,7 +357,6 @@
 
         let baseColorRGB = [0.7, 0.7, 0.72];
 
-        // Structural Database holding layout properties for ALL files (Including the new Lambo)
         const structuralDatabase = {
             "mclaren_f1_1993_by_alex.ka..glb": { hp: 627, speed: 240, weight: "1,138 kg", engine: "6.1L V12", scale: "1 1 1" },
             "2024_lbsilhouette_works_murcielago_gt_evo.glb": { hp: 640, speed: 211, weight: "1,650 kg", engine: "6.5L V12", scale: "1 1 1" },
@@ -378,7 +370,6 @@
             "buick_riviera_1963-1965__www.vecarz.com.glb": { hp: 325, speed: 125, weight: "1,800 kg", engine: "6.6L Wildcat V8", scale: "0.00085 0.00085 0.00085" }
         };
 
-        // Initialize Native Python WebAssembly Runtime Module
         async function bootPythonEngine() {
             try {
                 pyodideInstance = await loadPyodide();
@@ -406,7 +397,6 @@
             document.getElementById('stat-engine').innerText = blueprint.engine;
         }
 
-        // Automated Scouting Engine + Python Matrix Blending Integration
         function executeDeepStructuralModifications() {
             if (!viewer.model) return;
 
@@ -417,7 +407,6 @@
 
             let finalPaintColor = [...baseColorRGB, 1.0];
 
-            // If Python engine is loaded, use actual Python scripts to process custom pearlescent color blending math shifts!
             if (pyodideInstance) {
                 try {
                     pyodideInstance.globals.set("r", baseColorRGB[0]);
@@ -425,9 +414,7 @@
                     pyodideInstance.globals.set("b", baseColorRGB[2]);
                     pyodideInstance.globals.set("bias", pythonBias);
 
-                    // Execute Python script algorithm natively in-browser
                     let pyResult = pyodideInstance.runPython(`
-                        # Python pearlescent mathematical shift equation
                         shifted_r = min(1.0, r + (bias * 0.25))
                         shifted_g = min(1.0, g + (bias * 0.05))
                         shifted_b = min(1.0, b + (bias * 0.40))
@@ -439,32 +426,43 @@
                 }
             }
 
-            // Material Target Traversal Matrix Loop
+            // High Precision Targeting Loop
             viewer.model.materials.forEach(mat => {
                 const matName = mat.name.toLowerCase();
 
-                // 1. Unified Exterior Paint Mapping Engine
-                if (matName.includes('paint') || matName.includes('body') || matName.includes('exterior') || 
-                    matName.includes('car_paint') || matName.includes('primary') || matName.includes('color') || matName.includes('material_0')) {
+                // Debug printout helper to console so we can see exact names if anything slips past
+                console.log("Found material node:", matName);
+
+                // 1. Target Exterior Car Paint (Ensuring windows, lights, frames are untouched)
+                if ((matName.includes('paint') || matName.includes('body') || matName.includes('exterior') || 
+                     matName.includes('car_paint') || matName.includes('primary') || matName.includes('color') || 
+                     matName.includes('material_0') || matName.includes('car_body') || matName.includes('shell')) && 
+                    !matName.includes('glass') && !matName.includes('light') && !matName.includes('lamp') && !matName.includes('interior')) {
+                    
                     mat.pbrMetallicRoughness.setBaseColorFactor(finalPaintColor);
                     mat.pbrMetallicRoughness.setRoughnessFactor(roughness);
                 }
 
-                // 2. Window Glazing Matrix Darkening System
-                if (matName.includes('glass') || matName.includes('window') || matName.includes('windshield') || matName.includes('tint')) {
+                // 2. High Precision Cabin Window Glazing (Filter out light objects explicitly)
+                if ((matName.includes('glass') || matName.includes('window') || matName.includes('windshield') || matName.includes('tint')) && 
+                    !matName.includes('light') && !matName.includes('lamp') && !matName.includes('headlight') && !matName.includes('indicator') && !matName.includes('mirror')) {
+                    
                     if (glassTinted) {
-                        mat.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.02, 0.98]);
+                        mat.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.02, 0.98]); // Dark Limo Tint
                         mat.pbrMetallicRoughness.setRoughnessFactor(0.01);
                     } else {
-                        mat.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.82, 0.88, 0.25]);
+                        mat.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.82, 0.88, 0.25]); // Clear Glass
                         mat.pbrMetallicRoughness.setRoughnessFactor(0.0);
                     }
                 }
             });
 
-            // 3. Spoilers & Wings Node Mapping Traversal Matrix Loop
+            // 3. Spoilers & Physical Object Nodes Toggles
+            // Note: Since spoilers are physical geometry meshes instead of separate materials, we scan the drawables (object nodes)
             viewer.model.drawables.forEach(meshNode => {
                 const nodeName = meshNode.name.toLowerCase();
+                
+                // If a model has a wing/spoiler mesh node built in, control its visibility
                 if (nodeName.includes('spoiler') || nodeName.includes('wing') || nodeName.includes('aerokit') || nodeName.includes('splitter')) {
                     meshNode.visible = wingVisible;
                 }
@@ -505,7 +503,6 @@
             if (ratio === 1) progressBar.style.transform = 'scaleX(0)';
         });
 
-        // Initialize Application
         bootPythonEngine();
     </script>
 </body>
