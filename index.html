@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>МСВК HyperMod Configurator Engine</title>
     
+    <!-- Google Model Viewer Core -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     
+    <!-- Pyodide Python WASM Engine Implementation Layer -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+
+    <!-- Import our custom multi-vehicle deep material mapping matrix architecture -->
+    <script src="hypermod_matrix.js"></script>
 
     <style>
         * {
@@ -45,7 +50,7 @@
         }
 
         @media (max-width: 1100px) {
-            .stage-container { height: 50%; }
+            .stage-container { height: 45%; }
         }
 
         model-viewer {
@@ -62,14 +67,14 @@
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
             overflow-y: auto;
             box-shadow: -12px 0 40px rgba(0,0,0,0.7);
             position: relative;
         }
 
         @media (max-width: 1100px) {
-            .control-deck { width: 100%; height: 50%; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
+            .control-deck { width: 100%; height: 55%; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
         }
 
         .deck-header {
@@ -80,16 +85,15 @@
         }
 
         .deck-title h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             font-weight: 900;
-            background: linear-gradient(90deg, #ffffff, #a1a1a6);
+            background: linear-gradient(90deg, #ffffff, #8e8e93);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Top Right International Flags Container */
         .flag-badge-container {
             display: flex;
             gap: 6px;
@@ -100,15 +104,15 @@
         }
 
         .flag-svg {
-            width: 20px;
-            height: 14px;
+            width: 22px;
+            height: 15px;
             border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
             display: block;
         }
 
         #python-status {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #ff9f0a;
             font-weight: 700;
             letter-spacing: 0.5px;
@@ -126,7 +130,7 @@
             gap: 12px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 16px;
+            padding: 14px;
             border-radius: 12px;
         }
 
@@ -144,14 +148,14 @@
         }
 
         .telemetry-value {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: #2f80ed;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
         .group-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #a1a1a6;
@@ -187,12 +191,12 @@
         }
 
         .matrix-swatch {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.15s, border-color 0.15s;
         }
         .matrix-swatch:hover { transform: scale(1.15); }
         .matrix-swatch.active { border-color: #2f80ed; transform: scale(1.1); }
@@ -200,7 +204,7 @@
         .slider-flex {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         .slider-row {
             display: flex;
@@ -209,15 +213,16 @@
         }
         .slider-row span { font-size: 0.8rem; color: #cccdcc; }
         input[type="range"] {
-            width: 60%;
+            width: 55%;
             accent-color: #2f80ed;
+            cursor: pointer;
         }
 
         .mod-toggle-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
         .mod-toggle-row:last-child { border-bottom: none; }
@@ -256,7 +261,7 @@
             <model-viewer 
                 id="viewer"
                 src="mclaren_f1_1993_by_alex.ka..glb" 
-                alt="Python Configurator Engine Studio" 
+                alt="МСВК Studio Engine Configurator" 
                 camera-controls 
                 auto-rotate
                 shadow-intensity="2"
@@ -272,10 +277,12 @@
                 </div>
                 
                 <div class="flag-badge-container">
+                    <!-- Ukraine Flag SVG -->
                     <svg class="flag-svg" viewBox="0 0 3 2">
                         <rect width="3" height="1" fill="#0057B7"/>
                         <rect y="1" width="3" height="1" fill="#FFD700"/>
                     </svg>
+                    <!-- Brazil Flag SVG -->
                     <svg class="flag-svg" viewBox="0 0 220 150">
                         <rect width="220" height="150" fill="#009c3b"/>
                         <polygon points="110,8 212,75 110,142 8,75" fill="#ffdf00"/>
@@ -284,6 +291,7 @@
                 </div>
             </div>
 
+            <!-- Telemetry Dashboard -->
             <div class="telemetry-dashboard">
                 <div class="telemetry-node">
                     <span class="telemetry-label">Engine Horsepower</span>
@@ -303,6 +311,7 @@
                 </div>
             </div>
 
+            <!-- Active Fleet Storage Selector Area -->
             <div class="control-group">
                 <span class="group-label">Active Garage Bay Slot</span>
                 <select id="vehicle-selector">
@@ -319,8 +328,9 @@
                 </select>
             </div>
 
+            <!-- Material Properties Customization Sliders (Hundreds of configurations) -->
             <div class="control-group">
-                <span class="group-label">Body Finish Matrix Configuration</span>
+                <span class="group-label">Body Finish & Material Parameters</span>
                 <div class="matrix-grid">
                     <div class="matrix-swatch active" style="background: #e1e1e6;" data-color="0.7,0.7,0.72"></div>
                     <div class="matrix-swatch" style="background: #b80000;" data-color="0.55,0,0"></div>
@@ -331,23 +341,28 @@
                 </div>
                 <div class="slider-flex" style="margin-top: 15px;">
                     <div class="slider-row">
-                        <span>Python Pearlescent Mix</span>
+                        <span>Python Color Blend</span>
                         <input type="range" id="slider-python-bias" min="0" max="1" step="0.05" value="0.0">
                     </div>
                     <div class="slider-row">
-                        <span>Clearcoat Gloss Polish</span>
+                        <span>Gloss Surface Roughness</span>
                         <input type="range" id="slider-roughness" min="0" max="1" step="0.01" value="0.2">
+                    </div>
+                    <div class="slider-row">
+                        <span>Metallic Refraction Alloy</span>
+                        <input type="range" id="slider-metalness" min="0" max="1" step="0.01" value="0.7">
                     </div>
                 </div>
             </div>
 
+            <!-- Dynamic Aerodynamic & Mechanical Customization Arrays -->
             <div class="control-group">
-                <span class="group-label">Modifications Tuning Stage</span>
+                <span class="group-label">Mechanical Upgrades Tuning Stage</span>
                 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
                         <span class="mod-headline">Carbon Aerodynamic Spoiler</span>
-                        <span class="mod-subline">Force engine nodes active (+15 HP)</span>
+                        <span class="mod-subline">Toggle visual high-gloss aero wing (+15 HP)</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-spoiler" checked>
@@ -357,8 +372,19 @@
 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
+                        <span class="mod-headline">Titanium Stage 3 Exhaust Bolt-On</span>
+                        <span class="mod-subline">Anodized heat-treated exhaust tips (+35 HP)</span>
+                    </div>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="mod-exhaust" checked>
+                        <span class="ios-slider"></span>
+                    </label>
+                </div>
+
+                <div class="mod-toggle-row">
+                    <div class="mod-meta">
                         <span class="mod-headline">Limousine Window Tint (98%)</span>
-                        <span class="mod-subline">Dark cabin visual glass tint</span>
+                        <span class="mod-subline">Darkened cabin privacy overlay</span>
                     </div>
                     <label class="ios-switch">
                         <input type="checkbox" id="mod-tint">
@@ -368,11 +394,11 @@
 
                 <div class="mod-toggle-row">
                     <div class="mod-meta">
-                        <span class="mod-headline">Stage 3 Exhaust Bolt-On</span>
-                        <span class="mod-subline">Straight-pipe flow calibration (+35 HP)</span>
+                        <span class="mod-headline">Cyber Cyan Chassis Neon Underglow</span>
+                        <span class="mod-subline">Ground illumination matrix grid</span>
                     </div>
                     <label class="ios-switch">
-                        <input type="checkbox" id="mod-exhaust">
+                        <input type="checkbox" id="mod-neon">
                         <span class="ios-slider"></span>
                     </label>
                 </div>
@@ -388,27 +414,16 @@
         const swatches = document.querySelectorAll('.matrix-swatch');
         const pythonStatusLabel = document.getElementById('python-status');
         
+        // Input Control Handles
         const sliderPythonBias = document.getElementById('slider-python-bias');
         const sliderRoughness = document.getElementById('slider-roughness');
-
+        const sliderMetalness = document.getElementById('slider-metalness');
         const modSpoiler = document.getElementById('mod-spoiler');
-        const modTint = document.getElementById('mod-tint');
         const modExhaust = document.getElementById('mod-exhaust');
+        const modTint = document.getElementById('mod-tint');
+        const modNeon = document.getElementById('mod-neon');
 
         let baseColorRGB = [0.7, 0.7, 0.72];
-
-        const structuralDatabase = {
-            "mclaren_f1_1993_by_alex.ka..glb": { hp: 627, speed: 240, weight: "1,138 kg", engine: "6.1L V12", scale: "1 1 1" },
-            "2024_lbsilhouette_works_murcielago_gt_evo.glb": { hp: 640, speed: 211, weight: "1,650 kg", engine: "6.5L V12", scale: "1 1 1" },
-            "free_porsche_911_carrera_4s.glb": { hp: 443, speed: 190, weight: "1,565 kg", engine: "3.0L Twin-Turbo H6", scale: "0.85 0.85 0.85" },
-            "1971_plymouth_hemi_cuda.glb": { hp: 425, speed: 155, weight: "1,680 kg", engine: "7.0L Hemi V8", scale: "0.75 0.75 0.75" },
-            "free_1975_porsche_911_930_turbo.glb": { hp: 256, speed: 155, weight: "1,140 kg", engine: "3.0L Turbo H6", scale: "2.3 2.3 2.3" },
-            "bmw_330i.glb": { hp: 255, speed: 155, weight: "1,655 kg", engine: "2.0L Inline-4 Turbo", scale: "1 1 1" },
-            "porsche_cayman_gt4__www.vecarz.com.glb": { hp: 414, speed: 188, weight: "1,420 kg", engine: "4.0L Flat-6", scale: "1 1 1" },
-            "2017_pandem_mazda_rx-8_v1_aero_kit.glb": { hp: 232, speed: 145, weight: "1,310 kg", engine: "1.3L Twin-Rotor Wankel", scale: "4.5 4.5 4.5" },
-            "2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb": { hp: 250, speed: 160, weight: "1,240 kg", engine: "2.0L Turbo Inline-4", scale: "1 1 1" },
-            "buick_riviera_1963-1965__www.vecarz.com.glb": { hp: 325, speed: 125, weight: "1,800 kg", engine: "6.6L Wildcat V8", scale: "0.00085 0.00085 0.00085" }
-        };
 
         async function bootPythonEngine() {
             try {
@@ -416,15 +431,17 @@
                 pythonStatusLabel.innerText = "Python WASM Core: Active";
                 pythonStatusLabel.style.color = "#30d158";
                 pythonStatusLabel.style.background = "rgba(48, 209, 88, 0.08)";
-                executeDeepStructuralModifications();
+                dispatchModelTransformations();
             } catch (err) {
-                pythonStatusLabel.innerText = "Python Loader Error";
+                pythonStatusLabel.innerText = "Python Loader Offline";
                 console.error(err);
             }
         }
 
         function syncTelemetryMetrics() {
-            const blueprint = structuralDatabase[vehicleSelector.value];
+            const blueprint = FleetCustomizationMatrix.vehicles[vehicleSelector.value];
+            if (!blueprint) return;
+
             let calculatedHp = blueprint.hp;
             let calculatedSpeed = parseInt(blueprint.speed);
 
@@ -437,72 +454,31 @@
             document.getElementById('stat-engine').innerText = blueprint.engine;
         }
 
-        function executeDeepStructuralModifications() {
+        function dispatchModelTransformations() {
             if (!viewer.model) return;
 
-            const roughness = parseFloat(sliderRoughness.value);
-            const pythonBias = parseFloat(sliderPythonBias.value);
-            const wingVisible = modSpoiler.checked;
-            const glassTinted = modTint.checked;
+            // Gather values to handle countless dynamic visual styles
+            const currentConfiguration = {
+                baseColor: baseColorRGB,
+                roughness: sliderRoughness.value,
+                metalness: sliderMetalness.value,
+                pythonBias: parseFloat(sliderPythonBias.value),
+                spoilerActive: modSpoiler.checked,
+                exhaustActive: modExhaust.checked,
+                tintActive: modTint.checked,
+                neonActive: modNeon.checked
+            };
 
-            let finalPaintColor = [...baseColorRGB, 1.0];
-
-            if (pyodideInstance) {
-                try {
-                    pyodideInstance.globals.set("r", baseColorRGB[0]);
-                    pyodideInstance.globals.set("g", baseColorRGB[1]);
-                    pyodideInstance.globals.set("b", baseColorRGB[2]);
-                    pyodideInstance.globals.set("bias", pythonBias);
-
-                    let pyResult = pyodideInstance.runPython(`
-                        shifted_r = min(1.0, r + (bias * 0.25))
-                        shifted_g = min(1.0, g + (bias * 0.05))
-                        shifted_b = min(1.0, b + (bias * 0.40))
-                        [shifted_r, shifted_g, shifted_b, 1.0]
-                    `);
-                    finalPaintColor = pyResult.toJs();
-                } catch (e) {
-                    console.error("Python Matrix execution crash: ", e);
-                }
-            }
-
-            viewer.model.materials.forEach(mat => {
-                const matName = mat.name.toLowerCase();
-
-                if ((matName.includes('paint') || matName.includes('body') || matName.includes('exterior') || 
-                     matName.includes('car_paint') || matName.includes('primary') || matName.includes('color') || 
-                     matName.includes('material_0') || matName.includes('car_body') || matName.includes('shell')) && 
-                    !matName.includes('glass') && !matName.includes('light') && !matName.includes('lamp') && !matName.includes('interior')) {
-                    
-                    mat.pbrMetallicRoughness.setBaseColorFactor(finalPaintColor);
-                    mat.pbrMetallicRoughness.setRoughnessFactor(roughness);
-                }
-
-                if ((matName.includes('glass') || matName.includes('window') || matName.includes('windshield') || matName.includes('tint')) && 
-                    !matName.includes('light') && !matName.includes('lamp') && !matName.includes('headlight') && !matName.includes('indicator') && !matName.includes('mirror')) {
-                    
-                    if (glassTinted) {
-                        mat.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.02, 0.98]);
-                        mat.pbrMetallicRoughness.setRoughnessFactor(0.01);
-                    } else {
-                        mat.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.82, 0.88, 0.25]);
-                        mat.pbrMetallicRoughness.setRoughnessFactor(0.0);
-                    }
-                }
-            });
-
-            viewer.model.drawables.forEach(meshNode => {
-                const nodeName = meshNode.name.toLowerCase();
-                if (nodeName.includes('spoiler') || nodeName.includes('wing') || nodeName.includes('aerokit') || nodeName.includes('splitter')) {
-                    meshNode.visible = wingVisible;
-                }
-            });
+            // Process configuration through global keyword mapping system
+            FleetCustomizationMatrix.applyDeepModifications(viewer.model, currentConfiguration);
         }
 
+        // Action Interface Routing Event Listeners
         vehicleSelector.addEventListener('change', (e) => {
             const file = e.target.value;
             viewer.src = file;
-            viewer.setAttribute('scale', structuralDatabase[file].scale);
+            const targetScale = FleetCustomizationMatrix.vehicles[file]?.scale || "1 1 1";
+            viewer.setAttribute('scale', targetScale);
             syncTelemetryMetrics();
         });
 
@@ -511,18 +487,24 @@
                 document.querySelector('.matrix-swatch.active').classList.remove('active');
                 swatch.classList.add('active');
                 baseColorRGB = swatch.getAttribute('data-color').split(',').map(Number);
-                executeDeepStructuralModifications();
+                dispatchModelTransformations();
             });
         });
 
-        sliderPythonBias.addEventListener('input', executeDeepStructuralModifications);
-        sliderRoughness.addEventListener('input', executeDeepStructuralModifications);
-        modSpoiler.addEventListener('change', () => { syncTelemetryMetrics(); executeDeepStructuralModifications(); });
-        modTint.addEventListener('change', executeDeepStructuralModifications);
-        modExhaust.addEventListener('change', syncTelemetryMetrics);
+        const responsiveControls = [sliderPythonBias, sliderRoughness, sliderMetalness, modSpoiler, modExhaust, modTint, modNeon];
+        responsiveControls.forEach(control => {
+            control.addEventListener('input', () => {
+                syncTelemetryMetrics();
+                dispatchModelTransformations();
+            });
+            control.addEventListener('change', () => {
+                syncTelemetryMetrics();
+                dispatchModelTransformations();
+            });
+        });
 
         viewer.addEventListener('load', () => {
-            executeDeepStructuralModifications();
+            dispatchModelTransformations();
             syncTelemetryMetrics();
         });
 
