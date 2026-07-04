@@ -2,396 +2,251 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HyperDrive // Streamed 3D Configurator Suite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Supercar Garage</title>
     
-    <!-- Three.js Engine Core Framework Components -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
     <style>
-        :root {
-            --bg-blur: blur(25px);
-            --panel-bg: rgba(10, 10, 12, 0.78);
-            --accent: #007eff;
-            --border: rgba(255, 255, 255, 0.08);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-        body, html { width: 100%; height: 100%; background: #060607; color: #fff; overflow: hidden; position: relative; }
-
-        #canvas-container {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        #ui-wrapper {
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: #0b0b0b;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+
+        /* Header styling */
+        header {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            padding: 20px;
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
             z-index: 10;
-            pointer-events: none; 
-            display: grid;
-            grid-template-columns: 340px 1fr 400px;
-            grid-template-rows: auto 1fr;
-            padding: 24px;
-            gap: 20px;
+            text-align: center;
         }
 
-        .glass-panel {
-            background: var(--panel-bg);
-            backdrop-filter: var(--bg-blur);
-            -webkit-backdrop-filter: var(--bg-blur);
-            border: 1px solid var(--border);
+        header h1 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        header p {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Core Viewer Viewport */
+        .viewport-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(circle at center, #222226 0%, #070708 80%);
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            outline: none;
+            --poster-color: transparent;
+        }
+
+        /* Bottom Controls UI overlay */
+        .controls-overlay {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 90%;
+            max-width: 500px;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
             border-radius: 16px;
-            padding: 22px;
-            pointer-events: auto; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; height: 75px; }
-        .brand-logo { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 1.3rem; letter-spacing: 3px; color: #fff; }
-        
-        .search-nav { display: flex; gap: 12px; width: 60%; max-width: 650px; }
-        #search-bar { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: #fff; padding: 0 16px; font-size: 0.9rem; outline: none; transition: 0.2s; }
-        #search-bar:focus { border-color: var(--accent); background: rgba(255,255,255,0.08); }
-        #car-model-selector { background: #121214; color: #fff; border: 1px solid var(--border); padding: 0 16px; border-radius: 10px; outline: none; font-weight: 600; cursor: pointer; }
-
-        #stats-dashboard { grid-column: 1; align-self: center; display: flex; flex-direction: column; gap: 18px; }
-        .stat-box { border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 10px; }
-        .stat-box:last-child { border: none; }
-        .stat-label { font-size: 0.75rem; color: #8c8c93; font-weight: 700; letter-spacing: 1px; }
-        .stat-value { font-size: 1.9rem; font-weight: 300; margin-top: 2px; display: block; }
-        .stat-value small { font-size: 0.85rem; color: #5c5c64; font-weight: 600; }
-
-        #config-sidebar { grid-column: 3; display: flex; flex-direction: column; overflow: hidden; height: calc(100vh - 150px); }
-        .tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .tab-btn { flex: 1; background: transparent; border: none; color: #6c6c73; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; padding: 8px 0; cursor: pointer; transition: 0.2s; }
-        .tab-btn.active { color: #fff; border-bottom: 2px solid var(--accent); }
-        
-        #options-container { flex: 1; overflow-y: auto; padding-right: 4px; }
-        .option-group { margin-bottom: 22px; }
-        .option-group h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #9c9c9f; margin-bottom: 12px; }
-        
-        .swatch-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .swatch { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .swatch.active { border-color: #fff; transform: scale(1.1); }
-        
-        .list-grid { display: flex; flex-direction: column; gap: 8px; }
-        .list-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; color: #d1d1d6; padding: 12px; text-align: left; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
-        .list-item:hover, .list-item.active { background: rgba(0, 126, 255, 0.12); border-color: var(--accent); color: #fff; }
-
-        #loading-indicator {
-            position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: white; padding: 8px 16px; font-weight: 600;
-            border-radius: 20px; font-size: 0.85rem; z-index: 100; display: none;
-            box-shadow: 0 4px 12px rgba(0,126,255,0.4);
+        .selector-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
         }
 
-        @media (max-width: 960px) {
-            #ui-wrapper { grid-template-columns: 1fr; grid-template-rows: auto auto auto 1fr; padding: 12px; gap: 12px; overflow-y: auto; pointer-events: auto; }
-            #canvas-container { height: 42vh; position: sticky; top: 0; }
-            header { flex-direction: column; height: auto; gap: 12px; }
-            .search-nav { width: 100%; }
-            #stats-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; text-align: center; }
-            .stat-value { font-size: 1.1rem; }
-            .stat-box { border: none; padding: 0; }
-            #config-sidebar { height: auto; max-height: 480px; }
+        select {
+            width: 100%;
+            background: #2a2a2e;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select:focus {
+            border-color: #007aff;
+        }
+
+        /* Custom drop arrow for select option */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            font-size: 0.7rem;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            pointer-events: none;
+        }
+
+        /* Subtle instructions indicator */
+        .interaction-hint {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            z-index: 5;
+        }
+
+        /* Loading progress overlay */
+        #loading-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #007aff;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.2s;
+            z-index: 20;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading-indicator">Streaming 3D Supercar...</div>
-    <div id="canvas-container"></div>
+    <header>
+        <h1>Virtual Garage</h1>
+        <p>Interactive 3D Showroom</p>
+    </header>
 
-    <div id="ui-wrapper">
-        <header class="glass-panel">
-            <div class="brand-logo">HYPERDRIVE</div>
-            <div class="search-nav">
-                <input type="text" id="search-bar" placeholder="Search parameters...">
-                <select id="car-model-selector"></select>
+    <div class="viewport-container">
+        <div id="loading-bar"></div>
+        
+        <model-viewer 
+            id="car-viewer"
+            src="mclaren_f1_1993_by_alex.ka..glb" 
+            alt="Garage Car Display" 
+            camera-controls 
+            auto-rotate
+            auto-rotate-delay="3000"
+            rotation-per-second="15deg"
+            shadow-intensity="1.5"
+            shadow-softness="0.8"
+            environment-image="neutral"
+            exposure="1.2"
+            camera-orbit="45deg 75deg 4.5m"
+            min-camera-orbit="auto auto 2.5m"
+            max-camera-orbit="auto auto 8m"
+            interaction-prompt="none">
+        </model-viewer>
+
+        <div class="interaction-hint">Drag to rotate • Pinch to zoom</div>
+
+        <div class="controls-overlay">
+            <label class="selector-label" for="car-select">Select Vehicle</label>
+            <div class="select-wrapper">
+                <select id="car-select">
+                    <option value="mclaren_f1_1993_by_alex.ka..glb">1993 McLaren F1</option>
+                    <option value="2024_lbsilhouette_works_murcielago_gt_evo.glb">2024 Liberty Walk Murciélago GT Evo</option>
+                    <option value="free_porsche_911_carrera_4s.glb">Porsche 911 Carrera 4S</option>
+                    <option value="1971_plymouth_hemi_cuda.glb">1971 Plymouth Hemi Cuda</option>
+                    <option value="2017_pandem_mazda_rx-8_v1_aero_kit.glb">2017 Pandem Mazda RX-8</option>
+                    <option value="2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb">2018 Garage Mak Nissan S15 Silvia</option>
+                </select>
             </div>
-        </header>
-
-        <section id="stats-dashboard" class="glass-panel">
-            <div class="stat-box"><span class="stat-label">POWER</span><span class="stat-value" id="stat-hp">0 <small>HP</small></span></div>
-            <div class="stat-box"><span class="stat-label">TORQUE</span><span class="stat-value" id="stat-torque">0 <small>LB-FT</small></span></div>
-            <div class="stat-box"><span class="stat-label">0-60 MPH</span><span class="stat-value" id="stat-speed">0.0 <small>S</small></span></div>
-            <div class="stat-box"><span class="stat-label">WEIGHT</span><span class="stat-value" id="stat-weight">0 <small>LBS</small></span></div>
-        </section>
-
-        <aside id="config-sidebar" class="glass-panel">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="exterior">EXTERIOR</button>
-                <button class="tab-btn" data-tab="interior">INTERIOR</button>
-                <button class="tab-btn" data-tab="performance">PERFORMANCE</button>
-            </div>
-            <div id="options-container"></div>
-        </aside>
+        </div>
     </div>
 
     <script>
-        // LIVE DIRECT STREAM CHANNELS FOR AUTHENTIC CAR ASSETS
-        function buildLiveGarage() {
-            return {
-                brands: {
-                    "supercars": {
-                        name: "Exotics Suite",
-                        models: {
-                            "ferrari": { name: "Italian Berlinetta Sports Variant", path: "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/ferrari.glb", baseSpecs: { hp: 661, torque: 561, zeroToSixty: 3.0, weight: 3252 }, options: { exterior: {}, interior: {}, performance: {} } },
-                            "cyber": { name: "Futuristic Cyber Chassis Aero", path: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb", baseSpecs: { hp: 1020, torque: 900, zeroToSixty: 1.99, weight: 4600 }, options: { exterior: {}, interior: {}, performance: {} } }
-                        }
-                    }
+        const viewer = document.getElementById('car-viewer');
+        const selector = document.getElementById('car-select');
+        const loadingBar = document.getElementById('loading-bar');
+
+        // Dynamic adjustment dictionary to balance scales and centers of different sized files
+        const modelAdjustments = {
+            "mclaren_f1_1993_by_alex.ka..glb": { scale: "1 1 1", orbit: "45deg 75deg 5m" },
+            "2024_lbsilhouette_works_murcielago_gt_evo.glb": { scale: "1 1 1", orbit: "45deg 75deg 5m" },
+            "free_porsche_911_carrera_4s.glb": { scale: "1 1 1", orbit: "45deg 75deg 4.5m" },
+            "1971_plymouth_hemi_cuda.glb": { scale: "1 1 1", orbit: "45deg 75deg 5.5m" },
+            "2017_pandem_mazda_rx-8_v1_aero_kit.glb": { scale: "1 1 1", orbit: "45deg 75deg 4.5m" },
+            "2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb": { scale: "1 1 1", orbit: "45deg 75deg 4.5m" }
+        };
+
+        // Handle dropdown swapping
+        selector.addEventListener('change', (event) => {
+            const fileName = event.target.value;
+            
+            // Set source file path directly matching your repo names
+            viewer.src = fileName;
+            
+            // Apply customized camera/scale metrics if specified
+            if (modelAdjustments[fileName]) {
+                if(modelAdjustments[fileName].scale) {
+                    viewer.setAttribute('scale', modelAdjustments[fileName].scale);
                 }
-            };
-        }
-
-        const rawData = buildLiveGarage();
-        
-        const masterPaints = [
-            {n:"Rosso Corsa Gloss", v:"#ff0000"}, {n:"Nardo Grey Clear", v:"#8c8c8c"}, {n:"Frozen Matte Black", v:"#0d0e10"}, 
-            {n:"Miami Riviera Blue", v:"#00a8b5"}, {n:"Speedway Gold Metallic", v:"#ecc609"}, {n:"British Racing Green", v:"#0a3821"}
-        ];
-
-        Object.keys(rawData.brands).forEach(bKey => {
-            Object.keys(rawData.brands[bKey].models).forEach(mKey => {
-                const optGroup = rawData.brands[bKey].models[mKey].options;
-                optGroup.exterior.paint = { label: "Performance Formulation Finish", type: "swatch", items: masterPaints.map((p, idx) => ({
-                    id: `pt-${idx}`, name: p.n, value: p.v, price: idx > 2 ? 4500 : 0
-                }))};
-                optGroup.exterior.wheels = { label: "Motorsport Forged Alloys", type: "list", items: Array.from({length: 4}, (_, i) => ({
-                    id: `wh-${i}`, name: `${19 + i}\" Dual 5-Spoke Forged Variant Mono`, price: i * 1200, specMods: { weight: -(i * 5) }
-                }))};
-                optGroup.performance.software = { label: "ECU Remaps & Diagnostics", type: "list", items: Array.from({length: 3}, (_, i) => ({
-                    id: `ec-${i}`, name: `Stage ${i+1} Core Powertrain Recalibration`, price: (i+1)*2500, specMods: { hp: (i+1)*45, torque: (i+1)*35, zeroToSixty: -(i*0.15) }
-                }))};
-            });
+                if(modelAdjustments[fileName].orbit) {
+                    viewer.setAttribute('camera-orbit', modelAdjustments[fileName].orbit);
+                }
+            }
         });
 
-        const CONFIG_DATA = rawData;
-
-        class StudioViewer {
-            constructor() {
-                this.container = document.getElementById('canvas-container');
-                this.loaderElement = document.getElementById('loading-indicator');
-                this.scene = null; this.camera = null; this.renderer = null; this.controls = null;
-                this.activeCarMesh = null;
-                this.initEngine();
-                this.initEnvironment();
-                this.renderLoop();
+        // Top progress indicator logic
+        viewer.addEventListener('progress', (event) => {
+            const progress = event.detail.totalProgress;
+            loadingBar.style.transform = `scaleX(${progress})`;
+            if (progress === 1) {
+                loadingBar.style.transform = 'scaleX(0)';
             }
-
-            initEngine() {
-                this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x060608);
-                this.scene.fog = new THREE.FogExp2(0x060608, 0.03);
-
-                this.camera = new THREE.PerspectiveCamera(40, this.container.clientWidth / this.container.clientHeight, 0.1, 100);
-                this.camera.position.set(4.8, 1.2, 4.8);
-
-                this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-                this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                this.renderer.toneMappingExposure = 1.0;
-                this.container.appendChild(this.renderer.domElement);
-
-                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-                this.controls.enableDamping = true;
-                this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
-
-                window.addEventListener('resize', () => this.resizeCanvas());
-            }
-
-            initEnvironment() {
-                this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-                const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
-                mainLight.position.set(4, 12, 4);
-                this.scene.add(mainLight);
-
-                const backlight = new THREE.DirectionalLight(0xffffff, 1.0);
-                backlight.position.set(-4, 6, -4);
-                this.scene.add(backlight);
-
-                const grid = new THREE.GridHelper(50, 50, 0x22222a, 0x0e0e12);
-                grid.position.y = -0.01;
-                this.scene.add(grid);
-            }
-
-            load3DAsset(url) {
-                if (this.activeCarMesh) this.scene.remove(this.activeCarMesh);
-                this.loaderElement.style.display = "block";
-
-                const loader = new THREE.GLTFLoader();
-                loader.load(url, (gltf) => {
-                    this.activeCarMesh = gltf.scene;
-                    
-                    // Standardize orientation and scale automatically
-                    const box = new THREE.Box3().setFromObject(this.activeCarMesh);
-                    const size = box.getSize(new THREE.Vector3()).length();
-                    const scale = 2.8 / size;
-                    this.activeCarMesh.scale.set(scale, scale, scale);
-                    this.activeCarMesh.position.set(0, 0, 0);
-
-                    this.scene.add(this.activeCarMesh);
-                    this.loaderElement.style.display = "none";
-                }, undefined, (err) => {
-                    console.error(err);
-                    this.loaderElement.style.display = "none";
-                });
-            }
-
-            applyPaintMatrix(hexValue) {
-                if (!this.activeCarMesh) return;
-                this.activeCarMesh.traverse(node => {
-                    if (node.isMesh && (node.name.toLowerCase().includes('body') || node.name.toLowerCase().includes('exterior') || node.name.toLowerCase().includes('paint'))) {
-                        node.material.color.setHex(parseInt(hexValue.replace('#', '0x')));
-                    }
-                });
-            }
-
-            resizeCanvas() {
-                this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
-                this.camera.updateProjectionMatrix();
-                this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-            }
-
-            renderLoop() {
-                requestAnimationFrame(() => this.renderLoop());
-                if (this.controls) this.controls.update();
-                if (this.renderer) this.renderer.render(this.scene, this.camera);
-            }
-        }
-
-        class ApplicationSuite {
-            constructor() {
-                this.view = new StudioViewer();
-                this.brandToken = "supercars";
-                this.modelToken = "ferrari";
-                this.configState = {};
-
-                this.launch();
-            }
-
-            launch() {
-                const dropdown = document.getElementById('car-model-selector');
-                for (const [bId, bVal] of Object.entries(CONFIG_DATA.brands)) {
-                    for (const [mId, mVal] of Object.entries(bVal.models)) {
-                        const opt = document.createElement('option');
-                        opt.value = `${bId}:${mId}`; opt.textContent = mVal.name;
-                        dropdown.appendChild(opt);
-                    }
-                }
-
-                dropdown.addEventListener('change', (e) => {
-                    const [brand, model] = e.target.value.split(':');
-                    this.mountVehicle(brand, model);
-                });
-
-                document.querySelectorAll('.tab-btn').forEach(tab => {
-                    tab.addEventListener('click', (e) => {
-                        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-                        e.target.classList.add('active');
-                        this.renderTabs(e.target.dataset.tab);
-                    });
-                });
-
-                this.mountVehicle(this.brandToken, this.modelToken);
-            }
-
-            mountVehicle(brand, model) {
-                this.brandToken = brand; this.modelToken = model;
-                const vehicle = CONFIG_DATA.brands[brand].models[model];
-
-                Object.keys(vehicle.options).forEach(category => {
-                    Object.keys(vehicle.options[category]).forEach(group => {
-                        this.configState[group] = vehicle.options[category][group].items[0];
-                    });
-                });
-
-                this.view.load3DAsset(vehicle.path);
-                this.renderTabs("exterior");
-                this.recalculateParameters();
-            }
-
-            renderTabs(tabName) {
-                const tray = document.getElementById('options-container');
-                tray.innerHTML = "";
-                const activeContext = CONFIG_DATA.brands[this.brandToken].models[this.modelToken].options[tabName];
-
-                if (!activeContext) return;
-
-                Object.entries(activeContext).forEach(([grpKey, grpObj]) => {
-                    const block = document.createElement('div');
-                    block.className = 'option-group';
-                    const h3 = document.createElement('h3'); h3.textContent = grpObj.label;
-                    block.appendChild(h3);
-
-                    if (grpObj.type === 'swatch') {
-                        const grid = document.createElement('div'); grid.className = 'swatch-grid';
-                        grpObj.items.forEach(item => {
-                            const sw = document.createElement('div');
-                            sw.className = `swatch ${this.configState[grpKey]?.id === item.id ? 'active' : ''}`;
-                            sw.style.backgroundColor = item.value;
-                            sw.addEventListener('click', () => {
-                                this.configState[grpKey] = item;
-                                this.renderTabs(tabName);
-                                this.recalculateParameters();
-                            });
-                            grid.appendChild(sw);
-                        });
-                        block.appendChild(grid);
-                    } else {
-                        const stack = document.createElement('div'); stack.className = 'list-grid';
-                        grpObj.items.forEach(item => {
-                            const card = document.createElement('button');
-                            card.className = `list-item ${this.configState[grpKey]?.id === item.id ? 'active' : ''}`;
-                            card.textContent = `${item.name} (+$${item.price.toLocaleString()})`;
-                            card.addEventListener('click', () => {
-                                this.configState[grpKey] = item;
-                                this.renderTabs(tabName);
-                                this.recalculateParameters();
-                            });
-                            stack.appendChild(card);
-                        });
-                        block.appendChild(stack);
-                    }
-                    tray.appendChild(block);
-                });
-            }
-
-            recalculateParameters() {
-                const baseSpecs = CONFIG_DATA.brands[this.brandToken].models[this.modelToken].baseSpecs;
-                let hp = baseSpecs.hp, torque = baseSpecs.torque, speed = baseSpecs.zeroToSixty, weight = baseSpecs.weight;
-
-                Object.values(this.configState).forEach(selection => {
-                    if (selection?.specMods) {
-                        if (selection.specMods.hp) hp += selection.specMods.hp;
-                        if (selection.specMods.torque) torque += selection.specMods.torque;
-                        if (selection.specMods.weight) weight += selection.specMods.weight;
-                        if (selection.specMods.zeroToSixty) speed += selection.specMods.zeroToSixty;
-                    }
-                });
-
-                document.getElementById('stat-hp').innerHTML = `${hp} <small>HP</small>`;
-                document.getElementById('stat-torque').innerHTML = `${torque} <small>LB-FT</small>`;
-                document.getElementById('stat-speed').innerHTML = `${speed.toFixed(2)} <small>S</small>`;
-                document.getElementById('stat-weight').innerHTML = `${weight.toLocaleString()} <small>LBS</small>`;
-
-                if (this.configState.paint) {
-                    this.view.applyPaintMatrix(this.configState.paint.value);
-                }
-            }
-        }
-
-        window.addEventListener('load', () => {
-            setTimeout(() => { new ApplicationSuite(); }, 100);
         });
     </script>
 </body>
