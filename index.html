@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Showroom Configurator</title>
+    <title>Ultimate 3D Supercar Configurator</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
@@ -12,19 +12,19 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
             width: 100vw;
-            height: 100vh;
-            background-color: #0b0b0b;
+            height: 100vw;
+            background-color: #08080a;
             overflow: hidden;
             display: flex;
             color: #fff;
+            height: 100vh;
         }
 
-        /* Responsive Layout splits on desktop, stacks on mobile */
         .container {
             display: flex;
             width: 100%;
@@ -32,24 +32,20 @@
             flex-direction: row;
         }
 
-        @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-            }
+        @media (max-width: 1024px) {
+            .container { flex-direction: column; }
         }
 
-        /* 3D Viewport Area */
+        /* 3D Viewport window */
         .viewport-container {
             flex: 1;
             position: relative;
-            background: radial-gradient(circle at center, #222226 0%, #070708 80%);
+            background: radial-gradient(circle at center, #1b1b1f 0%, #050506 90%);
             height: 100%;
         }
 
-        @media (max-width: 900px) {
-            .viewport-container {
-                height: 60%;
-            }
+        @media (max-width: 1024px) {
+            .viewport-container { height: 55%; }
         }
 
         model-viewer {
@@ -58,135 +54,148 @@
             outline: none;
         }
 
-        /* Side Control Panel */
+        /* Configurator Sidebar */
         .control-panel {
-            width: 380px;
-            background: #121214;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            width: 420px;
+            background: #0f0f12;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
             padding: 25px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 22px;
             overflow-y: auto;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.6);
         }
 
-        @media (max-width: 900px) {
-            .control-panel {
-                width: 100%;
-                height: 40%;
-                border-left: none;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-            }
+        @media (max-width: 1024px) {
+            .control-panel { width: 100%; height: 45%; border-left: none; border-top: 1px solid rgba(255,255,255,0.08); }
         }
 
-        .panel-title h1 {
-            font-size: 1.4rem;
+        .panel-header h1 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Specs Dashboard Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .spec-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .spec-label {
+            font-size: 0.65rem;
+            color: #666;
             text-transform: uppercase;
             font-weight: 700;
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
-        .panel-title p {
-            font-size: 0.8rem;
-            color: #888;
+        .spec-value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #007aff;
+            margin-top: 2px;
+            transition: color 0.3s ease;
         }
 
         .config-section {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .section-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #aaa;
-            font-weight: 600;
+            color: #999;
+            font-weight: 700;
         }
 
-        /* Form Inputs & Swatches */
         select {
             width: 100%;
-            background: #222226;
+            background: #18181c;
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 12px;
             border-radius: 8px;
             font-size: 0.95rem;
             cursor: pointer;
             outline: none;
+            transition: border-color 0.2s;
         }
+        select:focus { border-color: #007aff; }
 
+        /* Performance Upgrades & Paint Swatches */
         .color-swatches {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .swatch {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-        }
-
-        .swatch:hover {
-            transform: scale(1.1);
-        }
-
-        .swatch.active {
-            border-color: #007aff;
-            transform: scale(1.1);
-        }
-
-        /* Toggle Button styling */
-        .toggle-btn {
-            background: #222226;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 12px;
+            width: 38px;
+            height: 38px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-            text-align: center;
+            border: 2px solid rgba(0,0,0,0.4);
+            transition: transform 0.2s, border-color 0.2s;
         }
+        .swatch:hover { transform: scale(1.08); }
+        .swatch.active { border-color: #007aff; transform: scale(1.05); }
 
-        .toggle-btn.active {
-            background: #007aff;
-            border-color: #0051b3;
-        }
-
-        /* Sliders */
-        .slider-container {
+        .mod-row {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            background: #18181c;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        input[type="range"] {
-            flex: 1;
-            accent-color: #007aff;
-        }
+        .mod-info { display: flex; flex-direction: column; }
+        .mod-title { font-size: 0.85rem; font-weight: 600; }
+        .mod-desc { font-size: 0.7rem; color: #666; }
 
-        /* Loading progress overlay */
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #2c2c32; transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #007aff; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
         #loading-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #007aff;
-            transform-origin: left;
-            transform: scaleX(0);
-            transition: transform 0.2s;
-            z-index: 20;
+            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background-color: #007aff; transform-origin: left; transform: scaleX(0);
+            transition: transform 0.2s; z-index: 20;
         }
     </style>
 </head>
@@ -199,61 +208,88 @@
             <model-viewer 
                 id="car-viewer"
                 src="mclaren_f1_1993_by_alex.ka..glb" 
-                alt="Customizable 3D Vehicle Garage" 
+                alt="Interactive Configurator Studio" 
                 camera-controls 
-                shadow-intensity="1.5"
-                shadow-softness="0.5"
+                auto-rotate
+                auto-rotate-delay="4000"
+                shadow-intensity="1.8"
+                shadow-softness="0.4"
                 environment-image="neutral"
-                exposure="1.2"
-                camera-orbit="45deg 75deg auto"
+                exposure="1.3"
+                camera-orbit="35deg 78deg auto"
                 min-camera-orbit="auto auto auto"
                 max-camera-orbit="auto auto auto">
             </model-viewer>
         </div>
 
         <div class="control-panel">
-            <div class="panel-title">
-                <h1>Hyper Showroom</h1>
-                <p>Configurator Deck v2.0</p>
+            <div class="panel-header">
+                <h1>Studio Deck</h1>
+            </div>
+
+            <div class="specs-grid">
+                <div class="spec-box">
+                    <span class="spec-label">Power Output</span>
+                    <span class="spec-value" id="spec-hp">627 HP</span>
+                </div>
+                <div class="spec-box">
+                    <span class="spec-label">Top Velocity</span>
+                    <span class="spec-value" id="spec-speed">240 mph</span>
+                </div>
+                <div class="spec-box">
+                    <span class="spec-label">Curb Mass</span>
+                    <span class="spec-value" id="spec-weight">1,138 kg</span>
+                </div>
+                <div class="spec-box">
+                    <span class="spec-label">Engine Block</span>
+                    <span class="spec-value" id="spec-engine">6.1L V12</span>
+                </div>
             </div>
 
             <div class="config-section">
-                <span class="section-label">Select Base Chassis</span>
+                <span class="section-label">Active Vehicle Platform</span>
                 <select id="car-select">
                     <option value="mclaren_f1_1993_by_alex.ka..glb">1993 McLaren F1</option>
-                    <option value="2024_lbsilhouette_works_murcielago_gt_evo.glb">2024 Liberty Walk Murciélago</option>
                     <option value="free_porsche_911_carrera_4s.glb">Porsche 911 Carrera 4S</option>
                     <option value="1971_plymouth_hemi_cuda.glb">1971 Plymouth Hemi Cuda</option>
-                    <option value="2017_pandem_mazda_rx-8_v1_aero_kit.glb">2017 Pandem Mazda RX-8</option>
-                    <option value="2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb">2018 Garage Mak Nissan S15</option>
-                    <option value="bmw_330i.glb">BMW 330i</option>
-                    <option value="porsche_cayman_gt4__www.vecarz.com.glb">Porsche Cayman GT4</option>
-                    <option value="buick_riviera_1963-1965__www.vecarz.com.glb">Buick Riviera (1963-1965)</option>
                     <option value="free_1975_porsche_911_930_turbo.glb">1975 Porsche 911 930 Turbo</option>
                 </select>
             </div>
 
             <div class="config-section">
-                <span class="section-label">Exterior Paint Finish</span>
+                <span class="section-label">Metallic Paint Finish</span>
                 <div class="color-swatches">
-                    <div class="swatch active" style="background-color: #ffffff;" data-color="1,1,1,1"></div>
-                    <div class="swatch" style="background-color: #ff0000;" data-color="1,0,0,1"></div>
-                    <div class="swatch" style="background-color: #0022ff;" data-color="0,0.13,1,1"></div>
-                    <div class="swatch" style="background-color: #111111;" data-color="0.05,0.05,0.05,1"></div>
-                    <div class="swatch" style="background-color: #ffaa00;" data-color="1,0.66,0,1"></div>
-                    <div class="swatch" style="background-color: #00ffaa;" data-color="0,1,0.66,1"></div>
+                    <div class="swatch active" style="background-color: #d1d1d6;" data-color="0.6,0.6,0.63,1" data-rough="0.2" data-metal="0.9"></div>
+                    <div class="swatch" style="background-color: #c30000;" data-color="0.65,0,0,1" data-rough="0.15" data-metal="0.8"></div>
+                    <div class="swatch" style="background-color: #0b2265;" data-color="0.02,0.06,0.3,1" data-rough="0.25" data-metal="0.95"></div>
+                    <div class="swatch" style="background-color: #1c1c1e;" data-color="0.06,0.06,0.07,1" data-rough="0.3" data-metal="0.7"></div>
+                    <div class="swatch" style="background-color: #e5a900;" data-color="0.85,0.55,0,1" data-rough="0.15" data-metal="0.85"></div>
                 </div>
             </div>
 
             <div class="config-section">
-                <span class="section-label">Aero Modifications</span>
-                <button id="spoiler-toggle" class="toggle-btn active">Rear Wing / Spoiler: ON</button>
-            </div>
+                <span class="section-label">Aero & Cosmetics Config</span>
+                
+                <div class="mod-row">
+                    <div class="mod-info">
+                        <span class="mod-title">High-Downforce Spoiler</span>
+                        <span class="mod-desc" id="spoiler-desc">Adds rear aerodynamic wing</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-spoiler" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
 
-            <div class="config-section">
-                <span class="section-label">Studio Exposure (Brightness)</span>
-                <div class="slider-container">
-                    <input type="range" id="exposure-slider" min="0.4" max="2.5" step="0.1" value="1.2">
+                <div class="mod-row">
+                    <div class="mod-info">
+                        <span class="mod-title">Limousine Glass Tint</span>
+                        <span class="mod-desc">Darkens cabin greenhouse windows</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-tint">
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -261,90 +297,130 @@
 
     <script>
         const viewer = document.getElementById('car-viewer');
-        const selector = document.getElementById('car-select');
+        const carSelect = document.getElementById('car-select');
         const loadingBar = document.getElementById('loading-bar');
-        const spoilerToggle = document.getElementById('spoiler-toggle');
-        const exposureSlider = document.getElementById('exposure-slider');
         const swatches = document.querySelectorAll('.swatch');
+        
+        const toggleSpoiler = document.getElementById('toggle-spoiler');
+        const toggleTint = document.getElementById('toggle-tint');
+        const spoilerDesc = document.getElementById('spoiler-desc');
 
-        let spoilerVisible = true;
-        let activeColorFactor = [1, 1, 1, 1];
+        // Comprehensive Database linking assets to their real specs, file scale metrics, and properties
+        const carDatabase = {
+            "mclaren_f1_1993_by_alex.ka..glb": {
+                hp: "627 HP", speed: "240 mph", weight: "1,138 kg", engine: "6.1L V12",
+                scale: "1 1 1", hasSpoiler: true, spoilerDesc: "Active aerodynamic rear wing"
+            },
+            "free_porsche_911_carrera_4s.glb": {
+                hp: "443 HP", speed: "190 mph", weight: "1,565 kg", engine: "3.0L Twin-Turbo H6",
+                scale: "0.85 0.85 0.85", hasSpoiler: false, spoilerDesc: "Integrated pop-up wing"
+            },
+            "1971_plymouth_hemi_cuda.glb": {
+                hp: "425 HP", speed: "155 mph", weight: "1,680 kg", engine: "7.0L Hemi V8",
+                scale: "0.75 0.75 0.75", hasSpoiler: true, spoilerDesc: "Classic black trunk lip spoiler"
+            },
+            "free_1975_porsche_911_930_turbo.glb": {
+                hp: "256 HP", speed: "155 mph", weight: "1,140 kg", engine: "3.0L Turbo H6",
+                scale: "2.3 2.3 2.3", hasSpoiler: true, spoilerDesc: "Iconic Whale-Tail fixed wing"
+            }
+        };
 
-        // 1. Swap Vehicles
-        selector.addEventListener('change', (e) => {
-            viewer.src = e.target.value;
-            // Reset configurations when loading a brand new car
-            spoilerVisible = true;
-            spoilerToggle.classList.add('active');
-            spoilerToggle.innerText = "Rear Wing / Spoiler: ON";
+        // Current Active States
+        let currentCar = "mclaren_f1_1993_by_alex.ka..glb";
+        let colorFactor = [0.6, 0.6, 0.63, 1];
+        let roughnessFactor = 0.2;
+        let metalnessFactor = 0.9;
+
+        // 1. Swapping Cars & Live Stats Update
+        carSelect.addEventListener('change', (e) => {
+            currentCar = e.target.value;
+            const data = carDatabase[currentCar];
+
+            // Instantly transition details on UI
+            document.getElementById('spec-hp').innerText = data.hp;
+            document.getElementById('spec-speed').innerText = data.speed;
+            document.getElementById('spec-weight').innerText = data.weight;
+            document.getElementById('spec-engine').innerText = data.engine;
+            spoilerDesc.innerText = data.spoilerDesc;
+
+            // Handle whether spoiler option exists or is greyed out
+            toggleSpoiler.disabled = !data.hasSpoiler;
+            toggleSpoiler.checked = data.hasSpoiler;
+
+            // Load and dynamically re-scale model bounds
+            viewer.src = currentCar;
+            viewer.setAttribute('scale', data.scale);
         });
 
-        // 2. Adjust Colors (Paint Code)
-        swatches.forEach(swatch => {
-            swatch.addEventListener('click', (e) => {
-                document.querySelector('.swatch.active').classList.remove('active');
-                swatch.classList.add('active');
-                
-                const colorStr = swatch.getAttribute('data-color');
-                activeColorFactor = colorStr.split(',').map(Number);
-                
-                applyColorToCar();
-            });
-        });
-
-        function applyColorToCar() {
+        // 2. Material Processing Engine (Handles Colors, Finishes, & Tint Toggles)
+        function processMaterials() {
             if (!viewer.model) return;
-            // Finds primary exterior metallic materials automatically
+
             viewer.model.materials.forEach(material => {
                 const name = material.name.toLowerCase();
-                if (name.includes('car_paint') || name.includes('paint') || name.includes('body') || name.includes('exterior') || name.includes('carpaint')) {
-                    material.pbrMetallicRoughness.setBaseColorFactor(activeColorFactor);
+
+                // Target Body Paint Materials
+                if (name.includes('paint') || name.includes('body') || name.includes('exterior') || name.includes('car_paint') || name.includes('primary')) {
+                    material.pbrMetallicRoughness.setBaseColorFactor(colorFactor);
+                    material.pbrMetallicRoughness.setRoughnessFactor(roughnessFactor);
+                    material.pbrMetallicRoughness.setMetalnessFactor(metalnessFactor);
+                }
+
+                // Target Window Glass Material for Tint modification
+                if (name.includes('glass') || name.includes('window') || name.includes('windshield')) {
+                    if (toggleTint.checked) {
+                        material.pbrMetallicRoughness.setBaseColorFactor([0.02, 0.02, 0.03, 0.95]); // Near black
+                        material.pbrMetallicRoughness.setRoughnessFactor(0.05);
+                    } else {
+                        material.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.8, 0.85, 0.3]);  // Normal clear glass
+                        material.pbrMetallicRoughness.setRoughnessFactor(0.0);
+                    }
                 }
             });
         }
 
-        // 3. Toggle Spoiler Options
-        spoilerToggle.addEventListener('click', () => {
-            spoilerVisible = !spoilerVisible;
-            if (spoilerVisible) {
-                spoilerToggle.classList.add('active');
-                spoilerToggle.innerText = "Rear Wing / Spoiler: ON";
-            } else {
-                spoilerToggle.classList.remove('active');
-                spoilerToggle.innerText = "Rear Wing / Spoiler: OFF";
-            }
-            applyAeroOptions();
-        });
-
-        function applyAeroOptions() {
+        // 3. Node Visibility Engine (Handles Spoiler on/off additions)
+        function processMeshNodes() {
             if (!viewer.model) return;
-            // Scans glTF node structure for nodes labeled spoiler or wing
-            viewer.model.drawables.forEach(drawable => {
-                const name = drawable.name.toLowerCase();
-                if (name.includes('spoiler') || name.includes('wing') || name.includes('aerokit')) {
-                    drawable.visible = spoilerVisible;
+
+            const showSpoiler = toggleSpoiler.checked;
+            
+            // Evaluates and targets nodes mapped to wings/spoilers across GLB structures
+            viewer.model.drawables.forEach(node => {
+                const name = node.name.toLowerCase();
+                if (name.includes('spoiler') || name.includes('wing') || name.includes('aerokit') || name.includes('ext_spoiler')) {
+                    node.visible = showSpoiler;
                 }
             });
         }
 
-        // 4. Showroom Lighting Config
-        exposureSlider.addEventListener('input', (e) => {
-            viewer.setAttribute('exposure', e.target.value);
+        // Event Hook listeners for triggers
+        swatches.forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                document.querySelector('.swatch.active').classList.remove('active');
+                swatch.classList.add('active');
+
+                colorFactor = swatch.getAttribute('data-color').split(',').map(Number);
+                roughnessFactor = parseFloat(swatch.getAttribute('data-rough'));
+                metalnessFactor = parseFloat(swatch.getAttribute('data-metal'));
+
+                processMaterials();
+            });
         });
 
-        // Re-apply states dynamically when models finish background file streaming
+        toggleSpoiler.addEventListener('change', processMeshNodes);
+        toggleTint.addEventListener('change', processMaterials);
+
+        // Re-compile properties cleanly once assets stream complete load execution 
         viewer.addEventListener('load', () => {
-            applyColorToCar();
-            applyAeroOptions();
+            processMaterials();
+            processMeshNodes();
         });
 
-        // Main loader tracker bar
         viewer.addEventListener('progress', (e) => {
             const progress = e.detail.totalProgress;
             loadingBar.style.transform = `scaleX(${progress})`;
-            if (progress === 1) {
-                loadingBar.style.transform = 'scaleX(0)';
-            }
+            if (progress === 1) loadingBar.style.transform = 'scaleX(0)';
         });
     </script>
 </body>
