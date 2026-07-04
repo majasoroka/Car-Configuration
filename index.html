@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate 3D Supercar Configurator</title>
+    <title>Enterprise Hyper-Mod 3D Configurator Engine</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
@@ -17,278 +17,332 @@
 
         body {
             width: 100vw;
-            height: 100vw;
-            background-color: #08080a;
+            height: 100vh;
+            background-color: #060608;
             overflow: hidden;
             display: flex;
-            color: #fff;
-            height: 100vh;
+            color: #f5f5f7;
         }
 
-        .container {
+        .configurator-wrapper {
             display: flex;
             width: 100%;
             height: 100%;
             flex-direction: row;
         }
 
-        @media (max-width: 1024px) {
-            .container { flex-direction: column; }
+        @media (max-width: 1100px) {
+            .configurator-wrapper { flex-direction: column; }
         }
 
-        /* 3D Viewport window */
-        .viewport-container {
+        /* 3D Viewport Frame */
+        .stage-container {
             flex: 1;
             position: relative;
-            background: radial-gradient(circle at center, #1b1b1f 0%, #050506 90%);
+            background: radial-gradient(circle at center, #14151a 0%, #030304 100%);
             height: 100%;
         }
 
-        @media (max-width: 1024px) {
-            .viewport-container { height: 55%; }
+        @media (max-width: 1100px) {
+            .stage-container { height: 50%; }
         }
 
         model-viewer {
             width: 100%;
             height: 100%;
             outline: none;
+            --poster-color: transparent;
         }
 
-        /* Configurator Sidebar */
-        .control-panel {
-            width: 420px;
-            background: #0f0f12;
-            border-left: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 25px;
+        /* Control Deck Sidebar */
+        .control-deck {
+            width: 450px;
+            background: #0b0b0e;
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 20px;
             overflow-y: auto;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.6);
+            box-shadow: -12px 0 40px rgba(0,0,0,0.7);
         }
 
-        @media (max-width: 1024px) {
-            .control-panel { width: 100%; height: 45%; border-left: none; border-top: 1px solid rgba(255,255,255,0.08); }
+        @media (max-width: 1100px) {
+            .control-deck { width: 100%; height: 50%; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
         }
 
-        .panel-header h1 {
-            font-size: 1.5rem;
+        .deck-title h1 {
+            font-size: 1.3rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 800;
-            background: linear-gradient(45deg, #fff, #888);
+            letter-spacing: 1.5px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #fff, #a1a1a6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Specs Dashboard Grid */
-        .specs-grid {
+        /* Live Performance Telemetry Telemetry */
+        .telemetry-dashboard {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.03);
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
         }
 
-        .spec-box {
+        .telemetry-node {
             display: flex;
             flex-direction: column;
         }
 
-        .spec-label {
+        .telemetry-label {
             font-size: 0.65rem;
-            color: #666;
+            color: #6e6e73;
             text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        .telemetry-value {
+            font-size: 1.2rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            color: #2f80ed;
+            margin-top: 4px;
+            transition: color 0.2s, transform 0.2s;
         }
 
-        .spec-value {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #007aff;
-            margin-top: 2px;
-            transition: color 0.3s ease;
-        }
-
-        .config-section {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .section-label {
+        .group-label {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #999;
+            color: #a1a1a6;
             font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            border-radius: 10px;
         }
 
         select {
             width: 100%;
-            background: #18181c;
+            background: #141418;
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
             outline: none;
-            transition: border-color 0.2s;
         }
-        select:focus { border-color: #007aff; }
+        select:focus { border-color: #2f80ed; }
 
-        /* Performance Upgrades & Paint Swatches */
-        .color-swatches {
+        /* Custom Swatches Layer */
+        .matrix-grid {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .swatch {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+        .matrix-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             cursor: pointer;
-            border: 2px solid rgba(0,0,0,0.4);
+            border: 2px solid transparent;
             transition: transform 0.2s, border-color 0.2s;
+            position: relative;
         }
-        .swatch:hover { transform: scale(1.08); }
-        .swatch.active { border-color: #007aff; transform: scale(1.05); }
+        .matrix-swatch:hover { transform: scale(1.15); }
+        .matrix-swatch.active { border-color: #2f80ed; transform: scale(1.1); }
 
-        .mod-row {
+        /* Slider Controls */
+        .slider-flex {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .slider-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #18181c;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .slider-row span { font-size: 0.8rem; color: #cccdcc; }
+        input[type="range"] {
+            width: 60%;
+            accent-color: #2f80ed;
+            cursor: pointer;
         }
 
-        .mod-info { display: flex; flex-direction: column; }
-        .mod-title { font-size: 0.85rem; font-weight: 600; }
-        .mod-desc { font-size: 0.7rem; color: #666; }
-
-        /* Switch Toggle */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 46px;
-            height: 24px;
+        /* Toggle Switches */
+        .mod-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
+        .mod-toggle-row:last-child { border-bottom: none; }
+        
+        .mod-meta { display: flex; flex-direction: column; }
+        .mod-headline { font-size: 0.85rem; font-weight: 600; color: #fff; }
+        .mod-subline { font-size: 0.7rem; color: #6e6e73; }
+
+        .ios-switch {
+            position: relative; display: inline-block; width: 44px; height: 24px;
+        }
+        .ios-switch input { opacity: 0; width: 0; height: 0; }
+        .ios-slider {
             position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #2c2c32; transition: .3s; border-radius: 24px;
+            background-color: #2c2c32; transition: .25s; border-radius: 24px;
         }
-        .slider:before {
+        .ios-slider:before {
             position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: white; transition: .3s; border-radius: 50%;
+            background-color: white; transition: .25s; border-radius: 50%;
         }
-        input:checked + .slider { background-color: #007aff; }
-        input:checked + .slider:before { transform: translateX(22px); }
+        input:checked + .ios-slider { background-color: #2f80ed; }
+        input:checked + .ios-slider:before { transform: translateX(20px); }
 
-        #loading-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-            background-color: #007aff; transform-origin: left; transform: scaleX(0);
-            transition: transform 0.2s; z-index: 20;
+        #load-progress {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #2f80ed, #00f2fe); transform-origin: left;
+            transform: scaleX(0); transition: transform 0.2s; z-index: 100;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="viewport-container">
-            <div id="loading-bar"></div>
-            
+    <div class="configurator-wrapper">
+        <div class="stage-container">
+            <div id="load-progress"></div>
             <model-viewer 
-                id="car-viewer"
+                id="viewer"
                 src="mclaren_f1_1993_by_alex.ka..glb" 
-                alt="Interactive Configurator Studio" 
+                alt="Mod Engine Studio" 
                 camera-controls 
                 auto-rotate
-                auto-rotate-delay="4000"
-                shadow-intensity="1.8"
-                shadow-softness="0.4"
+                auto-rotate-delay="6000"
+                shadow-intensity="2"
+                shadow-softness="0.3"
                 environment-image="neutral"
-                exposure="1.3"
-                camera-orbit="35deg 78deg auto"
-                min-camera-orbit="auto auto auto"
-                max-camera-orbit="auto auto auto">
+                exposure="1.35"
+                camera-orbit="45deg 75deg auto">
             </model-viewer>
         </div>
 
-        <div class="control-panel">
-            <div class="panel-header">
-                <h1>Studio Deck</h1>
+        <div class="control-deck">
+            <div class="deck-title">
+                <h1>Matrix HyperMod V2</h1>
             </div>
 
-            <div class="specs-grid">
-                <div class="spec-box">
-                    <span class="spec-label">Power Output</span>
-                    <span class="spec-value" id="spec-hp">627 HP</span>
+            <div class="telemetry-dashboard">
+                <div class="telemetry-node">
+                    <span class="telemetry-label">Engine Horsepower</span>
+                    <span class="telemetry-value" id="stat-hp">627 HP</span>
                 </div>
-                <div class="spec-box">
-                    <span class="spec-label">Top Velocity</span>
-                    <span class="spec-value" id="spec-speed">240 mph</span>
+                <div class="telemetry-node">
+                    <span class="telemetry-label">Top Flight Velocity</span>
+                    <span class="telemetry-value" id="stat-speed">240 mph</span>
                 </div>
-                <div class="spec-box">
-                    <span class="spec-label">Curb Mass</span>
-                    <span class="spec-value" id="spec-weight">1,138 kg</span>
+                <div class="telemetry-node">
+                    <span class="telemetry-label">Dry Structural Mass</span>
+                    <span class="telemetry-value" id="stat-weight">1,138 kg</span>
                 </div>
-                <div class="spec-box">
-                    <span class="spec-label">Engine Block</span>
-                    <span class="spec-value" id="spec-engine">6.1L V12</span>
+                <div class="telemetry-node">
+                    <span class="telemetry-label">Powertrain Config</span>
+                    <span class="telemetry-value" id="stat-engine">6.1L V12</span>
                 </div>
             </div>
 
-            <div class="config-section">
-                <span class="section-label">Active Vehicle Platform</span>
-                <select id="car-select">
+            <div class="control-group">
+                <span class="group-label">Active Garage Bay Slot</span>
+                <select id="vehicle-selector">
                     <option value="mclaren_f1_1993_by_alex.ka..glb">1993 McLaren F1</option>
                     <option value="free_porsche_911_carrera_4s.glb">Porsche 911 Carrera 4S</option>
                     <option value="1971_plymouth_hemi_cuda.glb">1971 Plymouth Hemi Cuda</option>
                     <option value="free_1975_porsche_911_930_turbo.glb">1975 Porsche 911 930 Turbo</option>
+                    <option value="bmw_330i.glb">BMW 330i Luxury Sedan</option>
+                    <option value="porsche_cayman_gt4__www.vecarz.com.glb">Porsche Cayman GT4 Track Edition</option>
+                    <option value="2017_pandem_mazda_rx-8_v1_aero_kit.glb">2017 Pandem Mazda RX-8 Widebody</option>
+                    <option value="2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb">2018 Garage Mak Nissan S15 Silvia</option>
+                    <option value="buick_riviera_1963-1965__www.vecarz.com.glb">1963 Buick Riviera Classic</option>
                 </select>
             </div>
 
-            <div class="config-section">
-                <span class="section-label">Metallic Paint Finish</span>
-                <div class="color-swatches">
-                    <div class="swatch active" style="background-color: #d1d1d6;" data-color="0.6,0.6,0.63,1" data-rough="0.2" data-metal="0.9"></div>
-                    <div class="swatch" style="background-color: #c30000;" data-color="0.65,0,0,1" data-rough="0.15" data-metal="0.8"></div>
-                    <div class="swatch" style="background-color: #0b2265;" data-color="0.02,0.06,0.3,1" data-rough="0.25" data-metal="0.95"></div>
-                    <div class="swatch" style="background-color: #1c1c1e;" data-color="0.06,0.06,0.07,1" data-rough="0.3" data-metal="0.7"></div>
-                    <div class="swatch" style="background-color: #e5a900;" data-color="0.85,0.55,0,1" data-rough="0.15" data-metal="0.85"></div>
+            <div class="control-group">
+                <span class="group-label">Body Shell Finish Palette</span>
+                <div class="matrix-grid">
+                    <div class="matrix-swatch active" style="background: #e1e1e6;" data-color="0.7,0.7,0.72,1"></div>
+                    <div class="matrix-swatch" style="background: #b80000;" data-color="0.55,0,0,1"></div>
+                    <div class="matrix-swatch" style="background: #002266;" data-color="0,0.04,0.25,1"></div>
+                    <div class="matrix-swatch" style="background: #151517;" data-color="0.04,0.04,0.05,1"></div>
+                    <div class="matrix-swatch" style="background: #e5a93b;" data-color="0.75,0.48,0.05,1"></div>
+                    <div class="matrix-swatch" style="background: #007633;" data-color="0,0.3,0.08,1"></div>
+                    <div class="matrix-swatch" style="background: #aa00aa;" data-color="0.45,0,0.45,1"></div>
+                </div>
+                <div class="slider-flex" style="margin-top: 15px;">
+                    <div class="slider-row">
+                        <span>Clearcoat Polish (Gloss)</span>
+                        <input type="range" id="slider-roughness" min="0" max="1" step="0.01" value="0.2">
+                    </div>
+                    <div class="slider-row">
+                        <span>Metallic Flake Density</span>
+                        <input type="range" id="slider-metalness" min="0" max="1" step="0.01" value="0.85">
+                    </div>
                 </div>
             </div>
 
-            <div class="config-section">
-                <span class="section-label">Aero & Cosmetics Config</span>
+            <div class="control-group">
+                <span class="group-label">Modifications Tuning Stage</span>
                 
-                <div class="mod-row">
-                    <div class="mod-info">
-                        <span class="mod-title">High-Downforce Spoiler</span>
-                        <span class="mod-desc" id="spoiler-desc">Adds rear aerodynamic wing</span>
+                <div class="mod-toggle-row">
+                    <div class="mod-meta">
+                        <span class="mod-headline">Carbon Aerodynamic Spoiler</span>
+                        <span class="mod-desc" id="mod-spoiler-text">Forcing rear downforce package (+15 HP profile)</span>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-spoiler" checked>
-                        <span class="slider"></span>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="mod-spoiler" checked>
+                        <span class="ios-slider"></span>
                     </label>
                 </div>
 
-                <div class="mod-row">
-                    <div class="mod-info">
-                        <span class="mod-title">Limousine Glass Tint</span>
-                        <span class="mod-desc">Darkens cabin greenhouse windows</span>
+                <div class="mod-toggle-row">
+                    <div class="mod-meta">
+                        <span class="mod-headline">Limousine Window Tint (95%)</span>
+                        <span class="mod-subline">Blocks cockpit visual visibility fields</span>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-tint">
-                        <span class="slider"></span>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="mod-tint">
+                        <span class="ios-slider"></span>
+                    </label>
+                </div>
+
+                <div class="mod-toggle-row">
+                    <div class="mod-meta">
+                        <span class="mod-headline">Stage 3 Exhaust Bolt-On</span>
+                        <span class="mod-subline">Straight-pipe free-flow map tuning configuration</span>
+                    </div>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="mod-exhaust">
+                        <span class="ios-slider"></span>
+                    </label>
+                </div>
+
+                <div class="mod-toggle-row">
+                    <div class="mod-meta">
+                        <span class="mod-headline">Chassis Neon Underglow Kit</span>
+                        <span class="mod-subline">Active neon LED illumination mapping</span>
+                    </div>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="mod-underglow">
+                        <span class="ios-slider"></span>
                     </label>
                 </div>
             </div>
@@ -296,131 +350,132 @@
     </div>
 
     <script>
-        const viewer = document.getElementById('car-viewer');
-        const carSelect = document.getElementById('car-select');
-        const loadingBar = document.getElementById('loading-bar');
-        const swatches = document.querySelectorAll('.swatch');
+        const viewer = document.getElementById('viewer');
+        const vehicleSelector = document.getElementById('vehicle-selector');
+        const progressBar = document.getElementById('load-progress');
+        const swatches = document.querySelectorAll('.matrix-swatch');
         
-        const toggleSpoiler = document.getElementById('toggle-spoiler');
-        const toggleTint = document.getElementById('toggle-tint');
-        const spoilerDesc = document.getElementById('spoiler-desc');
+        const sliderRoughness = document.getElementById('slider-roughness');
+        const sliderMetalness = document.getElementById('slider-metalness');
 
-        // Comprehensive Database linking assets to their real specs, file scale metrics, and properties
-        const carDatabase = {
-            "mclaren_f1_1993_by_alex.ka..glb": {
-                hp: "627 HP", speed: "240 mph", weight: "1,138 kg", engine: "6.1L V12",
-                scale: "1 1 1", hasSpoiler: true, spoilerDesc: "Active aerodynamic rear wing"
-            },
-            "free_porsche_911_carrera_4s.glb": {
-                hp: "443 HP", speed: "190 mph", weight: "1,565 kg", engine: "3.0L Twin-Turbo H6",
-                scale: "0.85 0.85 0.85", hasSpoiler: false, spoilerDesc: "Integrated pop-up wing"
-            },
-            "1971_plymouth_hemi_cuda.glb": {
-                hp: "425 HP", speed: "155 mph", weight: "1,680 kg", engine: "7.0L Hemi V8",
-                scale: "0.75 0.75 0.75", hasSpoiler: true, spoilerDesc: "Classic black trunk lip spoiler"
-            },
-            "free_1975_porsche_911_930_turbo.glb": {
-                hp: "256 HP", speed: "155 mph", weight: "1,140 kg", engine: "3.0L Turbo H6",
-                scale: "2.3 2.3 2.3", hasSpoiler: true, spoilerDesc: "Iconic Whale-Tail fixed wing"
-            }
+        const modSpoiler = document.getElementById('mod-spoiler');
+        const modTint = document.getElementById('mod-tint');
+        const modExhaust = document.getElementById('mod-exhaust');
+        const modUnderglow = document.getElementById('mod-underglow');
+
+        // Master Telemetry Database holding real metrics and structural calibration maps for ALL cars
+        const structuralDatabase = {
+            "mclaren_f1_1993_by_alex.ka..glb": { hp: 627, speed: 240, weight: "1,138 kg", engine: "6.1L V12", scale: "1 1 1" },
+            "free_porsche_911_carrera_4s.glb": { hp: 443, speed: 190, weight: "1,565 kg", engine: "3.0L Twin-Turbo H6", scale: "0.85 0.85 0.85" },
+            "1971_plymouth_hemi_cuda.glb": { hp: 425, speed: 155, weight: "1,680 kg", engine: "7.0L Hemi V8", scale: "0.75 0.75 0.75" },
+            "free_1975_porsche_911_930_turbo.glb": { hp: 256, speed: 155, weight: "1,140 kg", engine: "3.0L Turbo H6", scale: "2.3 2.3 2.3" },
+            "bmw_330i.glb": { hp: 255, speed: 155, weight: "1,655 kg", engine: "2.0L Inline-4 Turbo", scale: "1 1 1" },
+            "porsche_cayman_gt4__www.vecarz.com.glb": { hp: 414, speed: 188, weight: "1,420 kg", engine: "4.0L Flat-6", scale: "1 1 1" },
+            "2017_pandem_mazda_rx-8_v1_aero_kit.glb": { hp: 232, speed: 145, weight: "1,310 kg", engine: "1.3L Twin-Rotor Wankel", scale: "4.5 4.5 4.5" },
+            "2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb": { hp: 250, speed: 160, weight: "1,240 kg", engine: "2.0L Turbo Inline-4", scale: "1 1 1" },
+            "buick_riviera_1963-1965__www.vecarz.com.glb": { hp: 325, speed: 125, weight: "1,800 kg", engine: "6.6L Wildcat V8", scale: "0.00085 0.00085 0.00085" }
         };
 
-        // Current Active States
-        let currentCar = "mclaren_f1_1993_by_alex.ka..glb";
-        let colorFactor = [0.6, 0.6, 0.63, 1];
-        let roughnessFactor = 0.2;
-        let metalnessFactor = 0.9;
+        // Live modification run states
+        let selectedColor = [0.7, 0.7, 0.72, 1];
 
-        // 1. Swapping Cars & Live Stats Update
-        carSelect.addEventListener('change', (e) => {
-            currentCar = e.target.value;
-            const data = carDatabase[currentCar];
+        // Core Engine Execution: Recalculates and feeds layout changes to specs instantly
+        function syncTelemetryMetrics() {
+            const activeKey = vehicleSelector.value;
+            const blueprint = structuralDatabase[activeKey];
+            
+            // Calculate adjustments dynamically from mod setups
+            let calculatedHp = blueprint.hp;
+            let calculatedSpeed = parseInt(blueprint.speed);
 
-            // Instantly transition details on UI
-            document.getElementById('spec-hp').innerText = data.hp;
-            document.getElementById('spec-speed').innerText = data.speed;
-            document.getElementById('spec-weight').innerText = data.weight;
-            document.getElementById('spec-engine').innerText = data.engine;
-            spoilerDesc.innerText = data.spoilerDesc;
+            if (modSpoiler.checked) calculatedHp += 15;
+            if (modExhaust.checked) { calculatedHp += 35; calculatedSpeed += 6; }
+            if (modUnderglow.checked) calculatedHp -= 2; // Simulation load penalty
 
-            // Handle whether spoiler option exists or is greyed out
-            toggleSpoiler.disabled = !data.hasSpoiler;
-            toggleSpoiler.checked = data.hasSpoiler;
+            // Post values down to UI nodes cleanly
+            document.getElementById('stat-hp').innerText = `${calculatedHp} HP`;
+            document.getElementById('stat-speed').innerText = `${calculatedSpeed} mph`;
+            document.getElementById('stat-weight').innerText = blueprint.weight;
+            document.getElementById('stat-engine').innerText = blueprint.engine;
+        }
 
-            // Load and dynamically re-scale model bounds
-            viewer.src = currentCar;
-            viewer.setAttribute('scale', data.scale);
-        });
-
-        // 2. Material Processing Engine (Handles Colors, Finishes, & Tint Toggles)
-        function processMaterials() {
+        // Automated Scouting Engine: Force transforms color and geometry modifications safely
+        function executeDeepStructuralModifications() {
             if (!viewer.model) return;
 
-            viewer.model.materials.forEach(material => {
-                const name = material.name.toLowerCase();
+            const roughness = parseFloat(sliderRoughness.value);
+            const metalness = parseFloat(sliderMetalness.value);
+            const wingVisible = modSpoiler.checked;
+            const glassTinted = modTint.checked;
 
-                // Target Body Paint Materials
-                if (name.includes('paint') || name.includes('body') || name.includes('exterior') || name.includes('car_paint') || name.includes('primary')) {
-                    material.pbrMetallicRoughness.setBaseColorFactor(colorFactor);
-                    material.pbrMetallicRoughness.setRoughnessFactor(roughnessFactor);
-                    material.pbrMetallicRoughness.setMetalnessFactor(metalnessFactor);
+            // Target materials natively using algorithmic keyword tracking matrices
+            viewer.model.materials.forEach(mat => {
+                const matName = mat.name.toLowerCase();
+
+                // 1. Unified Exterior Shell Paint Mapping Control
+                if (matName.includes('paint') || matName.includes('body') || matName.includes('exterior') || 
+                    matName.includes('car_paint') || matName.includes('primary') || matName.includes('color') || matName.includes('material_0')) {
+                    mat.pbrMetallicRoughness.setBaseColorFactor(selectedColor);
+                    mat.pbrMetallicRoughness.setRoughnessFactor(roughness);
+                    mat.pbrMetallicRoughness.setMetalnessFactor(metalness);
                 }
 
-                // Target Window Glass Material for Tint modification
-                if (name.includes('glass') || name.includes('window') || name.includes('windshield')) {
-                    if (toggleTint.checked) {
-                        material.pbrMetallicRoughness.setBaseColorFactor([0.02, 0.02, 0.03, 0.95]); // Near black
-                        material.pbrMetallicRoughness.setRoughnessFactor(0.05);
+                // 2. Greenhouse Window Glazing Darkening System
+                if (matName.includes('glass') || matName.includes('window') || matName.includes('windshield') || matName.includes('tint')) {
+                    if (glassTinted) {
+                        mat.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.02, 0.98]);
+                        mat.pbrMetallicRoughness.setRoughnessFactor(0.02);
                     } else {
-                        material.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.8, 0.85, 0.3]);  // Normal clear glass
-                        material.pbrMetallicRoughness.setRoughnessFactor(0.0);
+                        mat.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.82, 0.88, 0.25]);
+                        mat.pbrMetallicRoughness.setRoughnessFactor(0.0);
                     }
                 }
             });
-        }
 
-        // 3. Node Visibility Engine (Handles Spoiler on/off additions)
-        function processMeshNodes() {
-            if (!viewer.model) return;
-
-            const showSpoiler = toggleSpoiler.checked;
-            
-            // Evaluates and targets nodes mapped to wings/spoilers across GLB structures
-            viewer.model.drawables.forEach(node => {
-                const name = node.name.toLowerCase();
-                if (name.includes('spoiler') || name.includes('wing') || name.includes('aerokit') || name.includes('ext_spoiler')) {
-                    node.visible = showSpoiler;
+            // 3. Object-Tree Node Toggle System for physical elements (Spoiler/Wing structures)
+            viewer.model.drawables.forEach(meshNode => {
+                const nodeName = meshNode.name.toLowerCase();
+                if (nodeName.includes('spoiler') || nodeName.includes('wing') || nodeName.includes('aerokit') || nodeName.includes('splitter')) {
+                    meshNode.visible = wingVisible;
                 }
             });
         }
 
-        // Event Hook listeners for triggers
+        // Core Event Handlers
+        vehicleSelector.addEventListener('change', (e) => {
+            const currentFile = e.target.value;
+            viewer.src = currentFile;
+            viewer.setAttribute('scale', structuralDatabase[currentFile].scale);
+            syncTelemetryMetrics();
+        });
+
         swatches.forEach(swatch => {
             swatch.addEventListener('click', () => {
-                document.querySelector('.swatch.active').classList.remove('active');
+                document.querySelector('.matrix-swatch.active').classList.remove('active');
                 swatch.classList.add('active');
-
-                colorFactor = swatch.getAttribute('data-color').split(',').map(Number);
-                roughnessFactor = parseFloat(swatch.getAttribute('data-rough'));
-                metalnessFactor = parseFloat(swatch.getAttribute('data-metal'));
-
-                processMaterials();
+                selectedColor = swatch.getAttribute('data-color').split(',').map(Number);
+                executeDeepStructuralModifications();
             });
         });
 
-        toggleSpoiler.addEventListener('change', processMeshNodes);
-        toggleTint.addEventListener('change', processMaterials);
+        // Event hooks linking modifications across real-time operations
+        sliderRoughness.addEventListener('input', executeDeepStructuralModifications);
+        sliderMetalness.addEventListener('input', executeDeepStructuralModifications);
+        modSpoiler.addEventListener('change', () => { syncTelemetryMetrics(); executeDeepStructuralModifications(); });
+        modTint.addEventListener('change', executeDeepStructuralModifications);
+        modExhaust.addEventListener('change', syncTelemetryMetrics);
+        modUnderglow.addEventListener('change', syncTelemetryMetrics);
 
-        // Re-compile properties cleanly once assets stream complete load execution 
+        // Lifecycle updates to apply engine parameters when 3D object parsing is completed
         viewer.addEventListener('load', () => {
-            processMaterials();
-            processMeshNodes();
+            executeDeepStructuralModifications();
+            syncTelemetryMetrics();
         });
 
         viewer.addEventListener('progress', (e) => {
-            const progress = e.detail.totalProgress;
-            loadingBar.style.transform = `scaleX(${progress})`;
-            if (progress === 1) loadingBar.style.transform = 'scaleX(0)';
+            const ratio = e.detail.totalProgress;
+            progressBar.style.transform = `scaleX(${ratio})`;
+            if (ratio === 1) progressBar.style.transform = 'scaleX(0)';
         });
     </script>
 </body>
