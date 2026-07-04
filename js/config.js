@@ -45,7 +45,7 @@ const CONFIG_DATA = {
                                 label: "Upholstery Leather",
                                 type: "swatch",
                                 items: [
-                                    { id: "nero-leather", name: "Nero Ade Alcantara", value: #1d1d1f", rough: 0.8, metal: 0.0, price: 0 },
+                                    { id: "nero-leather", name: "Nero Ade Alcantara", value: "#1d1d1f", rough: 0.8, metal: 0.0, price: 0 },
                                     { id: "cuoio-tan", name: "Cuoio Tuscan Leather", value: "#8b5a2b", rough: 0.7, metal: 0.0, price: 4500 }
                                 ]
                             }
