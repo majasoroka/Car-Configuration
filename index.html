@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
+    <!-- Three.js Engine Core Framework Components -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -106,14 +107,14 @@
 </head>
 <body>
 
-    <div id="loading-indicator">Streaming 3D Assets...</div>
+    <div id="loading-indicator">Streaming 3D Supercar...</div>
     <div id="canvas-container"></div>
 
     <div id="ui-wrapper">
         <header class="glass-panel">
             <div class="brand-logo">HYPERDRIVE</div>
             <div class="search-nav">
-                <input type="text" id="search-bar" placeholder="Search across 100+ configuration fields...">
+                <input type="text" id="search-bar" placeholder="Search parameters...">
                 <select id="car-model-selector"></select>
             </div>
         </header>
@@ -136,15 +137,15 @@
     </div>
 
     <script>
-        // STREAMING MODELS INSTANTLY VIA DIRECT PUBLIC WEB URLS (NO UPLOADS REQUIRED)
+        // LIVE DIRECT STREAM CHANNELS FOR AUTHENTIC CAR ASSETS
         function buildLiveGarage() {
             return {
                 brands: {
                     "supercars": {
                         name: "Exotics Suite",
                         models: {
-                            "concept": { name: "Bespoke Supercar Concept", path: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb", baseSpecs: { hp: 720, torque: 570, zeroToSixty: 2.8, weight: 3150 }, options: { exterior: {}, interior: {}, performance: {} } },
-                            "retro": { name: "Vintage Concept Chassis", path: "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb", baseSpecs: { hp: 310, torque: 340, zeroToSixty: 5.1, weight: 2840 }, options: { exterior: {}, interior: {}, performance: {} } }
+                            "ferrari": { name: "Italian Berlinetta Sports Variant", path: "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/ferrari.glb", baseSpecs: { hp: 661, torque: 561, zeroToSixty: 3.0, weight: 3252 }, options: { exterior: {}, interior: {}, performance: {} } },
+                            "cyber": { name: "Futuristic Cyber Chassis Aero", path: "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SciFiHelmet/glTF-Binary/SciFiHelmet.glb", baseSpecs: { hp: 1020, torque: 900, zeroToSixty: 1.99, weight: 4600 }, options: { exterior: {}, interior: {}, performance: {} } }
                         }
                     }
                 }
@@ -153,27 +154,22 @@
 
         const rawData = buildLiveGarage();
         
-        // Procedural generator to append deep customization matrix fields to streamed variants
         const masterPaints = [
-            {n:"Nardo Grey Clear", v:"#8c8c8c"}, {n:"Frozen Matte Black", v:"#0d0e10"}, {n:"Guards Rosso Gloss", v:"#c90c19"},
-            {n:"Miami Riviera Teal", v:"#00a8b5"}, {n:"Speedway Yellow Metallic", v:"#ecc609"}, {n:"Chalk Crayon Solid", v:"#d6d6d9"},
-            {n:"British Racing Green", v:"#0a3821"}, {n:"Liquid Metallic Platinum", v:"#d0d3d4"}, {n:"Papaya Circuit Orange", v:"#ff6200"}
+            {n:"Rosso Corsa Gloss", v:"#ff0000"}, {n:"Nardo Grey Clear", v:"#8c8c8c"}, {n:"Frozen Matte Black", v:"#0d0e10"}, 
+            {n:"Miami Riviera Blue", v:"#00a8b5"}, {n:"Speedway Gold Metallic", v:"#ecc609"}, {n:"British Racing Green", v:"#0a3821"}
         ];
-        for (let i = 1; i <= 20; i++) {
-            masterPaints.push({n: `Bespoke Spec Custom formulation Coat Paint Block-${i}`, v: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`});
-        }
 
         Object.keys(rawData.brands).forEach(bKey => {
             Object.keys(rawData.brands[bKey].models).forEach(mKey => {
                 const optGroup = rawData.brands[bKey].models[mKey].options;
-                optGroup.exterior.paint = { label: "Performance Formulation Paint Coat", type: "swatch", items: masterPaints.map((p, idx) => ({
-                    id: `pt-${idx}`, name: p.n, value: p.v, price: idx > 4 ? 4200 : 0, rough: 0.1, metal: 0.95
+                optGroup.exterior.paint = { label: "Performance Formulation Finish", type: "swatch", items: masterPaints.map((p, idx) => ({
+                    id: `pt-${idx}`, name: p.n, value: p.v, price: idx > 2 ? 4500 : 0
                 }))};
-                optGroup.exterior.wheels = { label: "Motorsport Forged Wheel Arrays", type: "list", items: Array.from({length: 15}, (_, i) => ({
-                    id: `wh-${i}`, name: `${19 + (i%3)}\" Option Performance Mono-block Variant ${i+1}`, price: i * 950, specMods: { weight: -(i * 2) }
+                optGroup.exterior.wheels = { label: "Motorsport Forged Alloys", type: "list", items: Array.from({length: 4}, (_, i) => ({
+                    id: `wh-${i}`, name: `${19 + i}\" Dual 5-Spoke Forged Variant Mono`, price: i * 1200, specMods: { weight: -(i * 5) }
                 }))};
-                optGroup.performance.software = { label: "ECU Remaps & Overclocks", type: "list", items: Array.from({length: 15}, (_, i) => ({
-                    id: `ec-${i}`, name: `Stage ${i+1} Core Powertrain Micro-Calibration`, price: (i+1)*1200, specMods: { hp: (i+1)*22, torque: (i+1)*18, zeroToSixty: -(i*0.06) }
+                optGroup.performance.software = { label: "ECU Remaps & Diagnostics", type: "list", items: Array.from({length: 3}, (_, i) => ({
+                    id: `ec-${i}`, name: `Stage ${i+1} Core Powertrain Recalibration`, price: (i+1)*2500, specMods: { hp: (i+1)*45, torque: (i+1)*35, zeroToSixty: -(i*0.15) }
                 }))};
             });
         });
@@ -193,40 +189,39 @@
 
             initEngine() {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x050507);
-                this.scene.fog = new THREE.FogExp2(0x050507, 0.02);
+                this.scene.background = new THREE.Color(0x060608);
+                this.scene.fog = new THREE.FogExp2(0x060608, 0.03);
 
-                this.camera = new THREE.PerspectiveCamera(38, this.container.clientWidth / this.container.clientHeight, 0.1, 100);
-                this.camera.position.set(4.5, 1.4, 4.5);
+                this.camera = new THREE.PerspectiveCamera(40, this.container.clientWidth / this.container.clientHeight, 0.1, 100);
+                this.camera.position.set(4.8, 1.2, 4.8);
 
-                this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance", alpha: false });
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
                 this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
                 this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                this.renderer.shadowMap.enabled = true;
                 this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                this.renderer.toneMappingExposure = 1.2;
+                this.renderer.toneMappingExposure = 1.0;
                 this.container.appendChild(this.renderer.domElement);
 
                 this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
                 this.controls.enableDamping = true;
-                this.controls.maxPolarAngle = Math.PI / 2 - 0.04;
+                this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
 
                 window.addEventListener('resize', () => this.resizeCanvas());
             }
 
             initEnvironment() {
-                this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-                const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
-                keyLight.position.set(5, 10, 5);
-                this.scene.add(keyLight);
+                this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+                const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+                mainLight.position.set(4, 12, 4);
+                this.scene.add(mainLight);
 
-                const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshStandardMaterial({ color: 0x09090c, roughness: 0.4 }));
-                floor.rotation.x = -Math.PI / 2;
-                this.scene.add(floor);
+                const backlight = new THREE.DirectionalLight(0xffffff, 1.0);
+                backlight.position.set(-4, 6, -4);
+                this.scene.add(backlight);
 
-                const baseGrid = new THREE.GridHelper(60, 60, 0x1c1c24, 0x0c0c0f);
-                baseGrid.position.y = 0.002;
-                this.scene.add(baseGrid);
+                const grid = new THREE.GridHelper(50, 50, 0x22222a, 0x0e0e12);
+                grid.position.y = -0.01;
+                this.scene.add(grid);
             }
 
             load3DAsset(url) {
@@ -237,12 +232,12 @@
                 loader.load(url, (gltf) => {
                     this.activeCarMesh = gltf.scene;
                     
-                    // Normalize sizing from varied web URLs automatically
+                    // Standardize orientation and scale automatically
                     const box = new THREE.Box3().setFromObject(this.activeCarMesh);
                     const size = box.getSize(new THREE.Vector3()).length();
-                    const scale = 2.5 / size;
+                    const scale = 2.8 / size;
                     this.activeCarMesh.scale.set(scale, scale, scale);
-                    this.activeCarMesh.position.y = 0.2;
+                    this.activeCarMesh.position.set(0, 0, 0);
 
                     this.scene.add(this.activeCarMesh);
                     this.loaderElement.style.display = "none";
@@ -255,7 +250,7 @@
             applyPaintMatrix(hexValue) {
                 if (!this.activeCarMesh) return;
                 this.activeCarMesh.traverse(node => {
-                    if (node.isMesh) {
+                    if (node.isMesh && (node.name.toLowerCase().includes('body') || node.name.toLowerCase().includes('exterior') || node.name.toLowerCase().includes('paint'))) {
                         node.material.color.setHex(parseInt(hexValue.replace('#', '0x')));
                     }
                 });
@@ -278,9 +273,8 @@
             constructor() {
                 this.view = new StudioViewer();
                 this.brandToken = "supercars";
-                this.modelToken = "concept";
+                this.modelToken = "ferrari";
                 this.configState = {};
-                this.searchTokenString = "";
 
                 this.launch();
             }
@@ -298,11 +292,6 @@
                 dropdown.addEventListener('change', (e) => {
                     const [brand, model] = e.target.value.split(':');
                     this.mountVehicle(brand, model);
-                });
-
-                document.getElementById('search-bar').addEventListener('input', (e) => {
-                    this.searchTokenString = e.target.value.toLowerCase();
-                    this.renderTabs(document.querySelector('.tab-btn.active').dataset.tab);
                 });
 
                 document.querySelectorAll('.tab-btn').forEach(tab => {
@@ -339,9 +328,6 @@
                 if (!activeContext) return;
 
                 Object.entries(activeContext).forEach(([grpKey, grpObj]) => {
-                    const sortedItems = grpObj.items.filter(item => item.name.toLowerCase().includes(this.searchTokenString));
-                    if (sortedItems.length === 0) return;
-
                     const block = document.createElement('div');
                     block.className = 'option-group';
                     const h3 = document.createElement('h3'); h3.textContent = grpObj.label;
@@ -349,7 +335,7 @@
 
                     if (grpObj.type === 'swatch') {
                         const grid = document.createElement('div'); grid.className = 'swatch-grid';
-                        sortedItems.forEach(item => {
+                        grpObj.items.forEach(item => {
                             const sw = document.createElement('div');
                             sw.className = `swatch ${this.configState[grpKey]?.id === item.id ? 'active' : ''}`;
                             sw.style.backgroundColor = item.value;
@@ -363,7 +349,7 @@
                         block.appendChild(grid);
                     } else {
                         const stack = document.createElement('div'); stack.className = 'list-grid';
-                        sortedItems.forEach(item => {
+                        grpObj.items.forEach(item => {
                             const card = document.createElement('button');
                             card.className = `list-item ${this.configState[grpKey]?.id === item.id ? 'active' : ''}`;
                             card.textContent = `${item.name} (+$${item.price.toLocaleString()})`;
