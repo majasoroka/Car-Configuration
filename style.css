@@ -254,3 +254,43 @@ header {
     background: white;
     color: black;
 }
+/* --- Ultra Responsive Mobile Adaptations --- */
+@media (max-width: 900px) {
+    #ui-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+        overflow-y: auto;
+        pointer-events: auto;
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .glass-panel {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    #config-sidebar {
+        grid-column: 1;
+        grid-row: auto;
+        max-height: 320px;
+    }
+
+    #stats-dashboard {
+        grid-column: 1;
+        grid-row: auto;
+        justify-self: stretch;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .stat-value {
+        font-size: 1.3rem;
+    }
+
+    #info-tooltip {
+        display: none; /* Hide tooltips on mobile to preserve screen space */
+    }
+}
