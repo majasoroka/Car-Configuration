@@ -1,0 +1,124 @@
+/**
+ * МСВК Studio Engine - Global Vehicle Configuration Matrix (hypermod_matrix.js)
+ * Manages deep structural 3D model parsing and material traversal logic maps.
+ */
+
+const FleetCustomizationMatrix = {
+    // Structural metadata tracking baseline metrics for all garage bays
+    vehicles: {
+        "mclaren_f1_1993_by_alex.ka..glb": { hp: 627, speed: 240, weight: "1,138 kg", engine: "6.1L V12", scale: "1 1 1" },
+        "2024_lbsilhouette_works_murcielago_gt_evo.glb": { hp: 640, speed: 211, weight: "1,650 kg", engine: "6.5L V12", scale: "1 1 1" },
+        "free_porsche_911_carrera_4s.glb": { hp: 443, speed: 190, weight: "1,565 kg", engine: "3.0L Twin-Turbo H6", scale: "0.85 0.85 0.85" },
+        "1971_plymouth_hemi_cuda.glb": { hp: 425, speed: 155, weight: "1,680 kg", engine: "7.0L Hemi V8", scale: "0.75 0.75 0.75" },
+        "free_1975_porsche_911_930_turbo.glb": { hp: 256, speed: 155, weight: "1,140 kg", engine: "3.0L Turbo H6", scale: "2.3 2.3 2.3" },
+        "bmw_330i.glb": { hp: 255, speed: 155, weight: "1,655 kg", engine: "2.0L Inline-4 Turbo", scale: "1 1 1" },
+        "porsche_cayman_gt4__www.vecarz.com.glb": { hp: 414, speed: 188, weight: "1,420 kg", engine: "4.0L Flat-6", scale: "1 1 1" },
+        "2017_pandem_mazda_rx-8_v1_aero_kit.glb": { hp: 232, speed: 145, weight: "1,310 kg", engine: "1.3L Twin-Rotor Wankel", scale: "4.5 4.5 4.5" },
+        "2018_garage_mak_nissan_s15_silvia_-_reggie_mah.glb": { hp: 250, speed: 160, weight: "1,240 kg", engine: "2.0L Turbo Inline-4", scale: "1 1 1" },
+        "buick_riviera_1963-1965__www.vecarz.com.glb": { hp: 325, speed: 125, weight: "1,800 kg", engine: "6.6L Wildcat V8", scale: "0.00085 0.00085 0.00085" }
+    },
+
+    // Comprehensive linguistic lookup array parameters targeting hundreds of cross-designer modifications
+    keywords: {
+        paint: ['paint', 'body', 'exterior', 'primary', 'shell', 'metallic', 'finish', 'car_paint', 'wrap', 'gloss', 'material_0', 'rem_0', 'texture', 'kit', 'widebody'],
+        glass: ['glass', 'window', 'windshield', 'greenhouse', 'clear_plastic', 'canopy'],
+        spoiler: ['spoiler', 'wing', 'rear_wing', 'aerokit', 'splitter', 'ducktail', 'flap', 'strut'],
+        exhaust: ['exhaust', 'muffler', 'tailpipe', 'pipe', 'tip', 'chrome_trim', 'metal_dark', 'undercarriage'],
+        chassis: ['chassis', 'frame', 'floor', 'suspension', 'axle', 'strut_bar'],
+        wheels: ['wheel', 'tire', 'rim', 'alloy', 'rubber', 'tread', 'spoke', 'hubcap']
+    },
+
+    // Exclusion filter matrices preventing visual clipping glitches
+    blacklists: ['light', 'lamp', 'headlight', 'lens', 'indicator', 'reflector', 'bulb', 'neon', 'brake_light', 'mirror', 'interior', 'leather', 'seat', 'dash', 'gauge', 'needle'],
+
+    /**
+     * Executes deep asset analysis, mapping out components instantly upon model compilation completion.
+     * @param {Object} model - The active glTF structural node tree from <model-viewer>
+     */
+    applyDeepModifications(model, configuration) {
+        if (!model || !model.materials) return;
+
+        const { baseColor, roughness, metalness, pythonBias, spoilerActive, tintActive, exhaustActive, stanceHeight, neonActive } = configuration;
+
+        // Calculate dynamic Python shift offset matrices via runtime engine boundaries
+        let finalPaintColor = [...baseColor, 1.0];
+        if (pythonBias > 0) {
+            finalPaintColor[0] = Math.min(1.0, finalPaintColor[0] + (pythonBias * 0.15));
+            finalPaintColor[1] = Math.min(1.0, finalPaintColor[1] + (pythonBias * 0.02));
+            finalPaintColor[2] = Math.min(1.0, finalPaintColor[2] + (pythonBias * 0.25));
+        }
+
+        model.materials.forEach(material => {
+            const matName = material.name ? material.name.toLowerCase() : '';
+            
+            // Safety scan against interior asset components
+            const isBlacklisted = this.keywords.blacklists?.some(key => matName.includes(key)) || 
+                                  this.blacklists.some(key => matName.includes(key));
+            
+            if (isBlacklisted) return;
+
+            // 1. Core Exterior Body Configuration
+            const isPaint = this.keywords.paint.some(key => matName.includes(key));
+            if (isPaint && !matName.includes('glass')) {
+                material.pbrMetallicRoughness.setBaseColorFactor(finalPaintColor);
+                material.pbrMetallicRoughness.setRoughnessFactor(parseFloat(roughness));
+                material.pbrMetallicRoughness.setMetalnessFactor(parseFloat(metalness));
+            }
+
+            // 2. Window Glass Tint Matrix Controls
+            const isGlass = this.keywords.glass.some(key => matName.includes(key));
+            if (isGlass) {
+                if (tintActive) {
+                    // Deep Dark 98% Limousine Tint
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.01, 0.01, 0.03, 0.98]);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.02);
+                } else {
+                    // Factory Standard Transparent Glass
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.8, 0.84, 0.9, 0.22]);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.0);
+                }
+            }
+
+            // 3. Carbon Aerodynamic Spoiler Mechanical Optimization Toggle
+            const isSpoiler = this.keywords.spoiler.some(key => matName.includes(key));
+            if (isSpoiler) {
+                if (spoilerActive) {
+                    // Force render node visible with an ultra-lightweight high-gloss carbon fiber color matrix
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.08, 0.08, 0.09, 1.0]);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.1);
+                    material.pbrMetallicRoughness.setMetalnessFactor(0.8);
+                } else {
+                    // Eliminate element from field of view by scaling geometry texture alpha value to absolute zero
+                    material.pbrMetallicRoughness.setBaseColorFactor([0, 0, 0, 0]);
+                }
+            }
+
+            // 4. Stage 3 Performance Exhaust Geometry Toggles
+            const isExhaust = this.keywords.exhaust.some(key => matName.includes(key));
+            if (isExhaust) {
+                if (exhaustActive) {
+                    // Blue-burned burnt Titanium finish matrix tracking
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.15, 0.35, 0.85, 1.0]);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.15);
+                    material.pbrMetallicRoughness.setMetalnessFactor(1.0);
+                } else {
+                    // Factory Standard Industrial Matte Steel
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.4, 0.4, 0.42, 1.0]);
+                    material.pbrMetallicRoughness.setRoughnessFactor(0.5);
+                    material.pbrMetallicRoughness.setMetalnessFactor(0.6);
+                }
+            }
+
+            // 5. Underglow Structural Styling Additions
+            if (matName.includes('neon') || matName.includes('underglow')) {
+                if (neonActive) {
+                    material.pbrMetallicRoughness.setBaseColorFactor([0.0, 0.95, 1.0, 1.0]);
+                } else {
+                    material.pbrMetallicRoughness.setBaseColorFactor([0, 0, 0, 0]);
+                }
+            }
+        });
+    }
+};
+
+window.FleetCustomizationMatrix = FleetCustomizationMatrix;
